@@ -1,22 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import { TamaguiProvider, XStack, YStack, Text, Theme, View } from 'tamagui';
 import tamaguiConfig from './tamagui.config';
+import BottomNavigation from './src/navigation/BottomNavigation/BottomNavigation';
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
   return (
     <TamaguiProvider config={tamaguiConfig}>
       <Theme name="light">
-        <Theme name="purple">
+        <Theme name="green">
+          <NavigationContainer>
+            <BottomNavigation />
+          </NavigationContainer>
           <StatusBar style="auto" />
-          <View f={1}>
-            <YStack f={1} bg="$background" ai="center" jc="center">
-              <XStack space="$4" ai="center">
-                <Text fontSize="$6" fontWeight="bold">
-                  Welcome to Tamagui + Expo
-                </Text>
-              </XStack>
-            </YStack>
-          </View>
         </Theme>
       </Theme>
     </TamaguiProvider>
