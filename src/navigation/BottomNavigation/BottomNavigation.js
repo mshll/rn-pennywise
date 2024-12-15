@@ -2,11 +2,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeNavigation, ChoresNavigation, QuizzesNavigation, StoreNavigation, ProfileNavigation } from '../StackNavigations/StackNavigations';
 import { BookText, CircleUserRound, Home, List, Store } from '@tamagui/lucide-icons';
 import { useTheme, Image, Theme } from 'tamagui';
+import { useNavigationState } from '@react-navigation/native';
+import { getThemeForRoute } from '../../config/theme';
 
 const Tab = createBottomTabNavigator();
 
 const BottomNav = () => {
   const theme = useTheme();
+  const state = useNavigationState((state) => state);
+  const currentRoute = state?.routes[state.index]?.name || 'Home';
 
   return (
     <Tab.Navigator
@@ -74,8 +78,12 @@ const BottomNav = () => {
 };
 
 const BottomNavigation = () => {
+  const state = useNavigationState((state) => state);
+  const currentRoute = state?.routes[state.index]?.name || 'Home';
+  const currentTheme = getThemeForRoute(currentRoute);
+
   return (
-    <Theme name="green">
+    <Theme name={currentTheme}>
       <BottomNav />
     </Theme>
   );

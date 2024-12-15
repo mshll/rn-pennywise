@@ -1,17 +1,20 @@
-import { View, YStack, XStack, Text } from 'tamagui';
-import { getToken } from 'tamagui';
+import { ScrollView, Text, View, YStack } from 'tamagui';
 
 const HomeScreen = () => {
   return (
-    <View f={1}>
-      <YStack f={1} bg="$background" ai="center" jc="center">
-        <XStack space="$4" ai="center">
-          <Text fontSize="$6" fontWeight="500">
-            Pennywise Homescreen
-          </Text>
-        </XStack>
-      </YStack>
-    </View>
+    <>
+      <ScrollView contentInsetAdjustmentBehavior="automatic" backgroundColor="$background" zIndex="2">
+        <View bg="$color5" height={32} />
+        <YStack f={1} bg="$background" borderTopLeftRadius={32} borderTopRightRadius={32} mt={-32}>
+          <YStack f={1} ai="center" jc="flex-start" gap="$4" p="$4">
+            <Text fontSize="$5" fontWeight="600" alignSelf="flex-start">
+              Welcome Home
+            </Text>
+            {/* Add your home screen content here */}
+          </YStack>
+        </YStack>
+      </ScrollView>
+    </>
   );
 };
 

@@ -15,6 +15,15 @@ import {
   Poppins_800ExtraBold,
   Poppins_900Black,
 } from '@expo-google-fonts/dev';
+import {
+  Rubik_300Light,
+  Rubik_400Regular,
+  Rubik_500Medium,
+  Rubik_600SemiBold,
+  Rubik_700Bold,
+  Rubik_800ExtraBold,
+  Rubik_900Black,
+} from '@expo-google-fonts/dev';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -33,6 +42,14 @@ export default function App() {
     Poppins_700Bold,
     Poppins_800ExtraBold,
     Poppins_900Black,
+    // ---
+    Rubik_300Light,
+    Rubik_400Regular,
+    Rubik_500Medium,
+    Rubik_600SemiBold,
+    Rubik_700Bold,
+    Rubik_800ExtraBold,
+    Rubik_900Black,
   });
 
   if (!fontsLoaded) {

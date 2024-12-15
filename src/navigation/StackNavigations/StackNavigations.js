@@ -1,32 +1,19 @@
-import { createStackNavigator } from '@react-navigation/stack';
-import { getToken, Theme, useTheme } from 'tamagui';
-import { Button } from 'tamagui';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Theme, useTheme } from 'tamagui';
 import { Pressable } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { ROUTE_THEMES } from '../../config/theme';
 
 import HomeScreen from '../../screens/HomeScreen';
 import ChoresScreen from '../../screens/ChoresScreen';
 import QuizzesScreen from '../../screens/QuizzesScreen';
 import StoreScreen from '../../screens/StoreScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
-const defaultScreenOptions = (theme) => ({
-  headerStyle: {
-    backgroundColor: theme.background.val,
-    elevation: 0,
-    shadowOpacity: 0,
-  },
-  headerTitleStyle: {
-    color: theme.color.val,
-  },
-  headerTitleAlign: 'center',
-});
-
-const styledScreenOptions = (theme) => ({
-  title: 'Chores',
+const createScreenOptions = (theme, title) => ({
+  title,
   headerStyle: {
     backgroundColor: theme.color5.val,
   },
@@ -35,7 +22,6 @@ const styledScreenOptions = (theme) => ({
     fontSize: 20,
     fontFamily: 'Fredoka_600SemiBold',
   },
-
   headerLargeTitle: true,
   headerLargeStyle: {
     backgroundColor: theme.color5.val,
@@ -54,60 +40,94 @@ const styledScreenOptions = (theme) => ({
   ),
 });
 
-export function HomeNavigation() {
-  const theme = useTheme();
-  return (
-    <Stack.Navigator screenOptions={defaultScreenOptions(theme)}>
-      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home' }} />
-    </Stack.Navigator>
-  );
-}
+const createStackNavigator = (screens, theme) => {
+  const NavigatorComponent = () => {
+    const themeHook = useTheme();
+    return (
+      <Stack.Navigator screenOptions={createScreenOptions(themeHook, screens[0].title)}>
+        {screens.map(({ name, component: Component, title, options = {} }) => (
+          <Stack.Screen
+            key={name}
+            name={name}
+            component={Component}
+            options={{
+              title: title || name,
+              ...options,
+            }}
+          />
+        ))}
+      </Stack.Navigator>
+    );
+  };
 
-const ChoresNav = () => {
-  const theme = useTheme();
-  return (
-    <Stack.Navigator screenOptions={styledScreenOptions(theme)}>
-      <Stack.Screen
-        name="ChoresScreen"
-        component={ChoresScreen}
-        options={{
-          title: 'Chores',
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
-export function ChoresNavigation() {
-  return (
-    <Theme name="green">
-      <ChoresNav />
+  return () => (
+    <Theme name={theme}>
+      <NavigatorComponent />
     </Theme>
   );
-}
+};
 
-export function QuizzesNavigation() {
-  const theme = useTheme();
-  return (
-    <Stack.Navigator screenOptions={defaultScreenOptions(theme)}>
-      <Stack.Screen name="QuizzesScreen" component={QuizzesScreen} options={{ title: 'Quizzes' }} />
-    </Stack.Navigator>
-  );
-}
+// Home Stack
+export const HomeNavigation = createStackNavigator(
+  [
+    {
+      name: 'HomeScreen',
+      component: HomeScreen,
+      title: 'Home',
+    },
+    // Add more screens for Home stack here
+  ],
+  ROUTE_THEMES.Home
+);
 
-export function StoreNavigation() {
-  const theme = useTheme();
-  return (
-    <Stack.Navigator screenOptions={defaultScreenOptions(theme)}>
-      <Stack.Screen name="StoreScreen" component={StoreScreen} options={{ title: 'Store' }} />
-    </Stack.Navigator>
-  );
-}
+// Chores Stack
+export const ChoresNavigation = createStackNavigator(
+  [
+    {
+      name: 'ChoresScreen',
+      component: ChoresScreen,
+      title: 'Chores',
+    },
+    // Add more screens for Chores stack here
+  ],
+  ROUTE_THEMES.Chores
+);
 
-export function ProfileNavigation() {
-  const theme = useTheme();
-  return (
-    <Stack.Navigator screenOptions={defaultScreenOptions(theme)}>
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'Profile' }} />
-    </Stack.Navigator>
-  );
-}
+// Quizzes Stack
+export const QuizzesNavigation = createStackNavigator(
+  [
+    {
+      name: 'QuizzesScreen',
+      component: QuizzesScreen,
+      title: 'Quizzes',
+    },
+    // Add more screens for Quizzes stack here
+  ],
+  ROUTE_THEMES.Quizzes
+);
+
+// Store Stack
+export const StoreNavigation = createStackNavigator(
+  [
+    {
+      name: 'StoreScreen',
+      component: StoreScreen,
+      title: 'Store',
+    },
+    // Add more screens for Store stack here
+  ],
+  ROUTE_THEMES.Store
+);
+
+// Profile Stack
+export const ProfileNavigation = createStackNavigator(
+  [
+    {
+      name: 'ProfileScreen',
+      component: ProfileScreen,
+      title: 'Profile',
+    },
+    // Add more screens for Profile stack here
+  ],
+  ROUTE_THEMES.Profile
+);
