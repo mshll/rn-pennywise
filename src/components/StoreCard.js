@@ -30,7 +30,7 @@ const CCard = ({ item, onPurchase, balance }) => {
 
   return (
     <Card
-      bg={isPurchased ? '$color4' : canAfford ? '$color6' : '$color3'}
+      bg={isPurchased ? '$color5' : canAfford ? '$color6' : '$color6'}
       br="$6"
       w="48%"
       bc="$color4"
@@ -38,7 +38,7 @@ const CCard = ({ item, onPurchase, balance }) => {
       pressStyle={!isPurchased ? { scale: 0.95 } : undefined}
       animation="bouncy"
       onPress={!isPurchased ? handlePress : undefined}
-      o={isPurchased ? 0.7 : canAfford ? 1 : 1}
+      o={isPurchased ? 0.7 : 1}
       overflow="hidden"
     >
       <Image source={{ uri: item.image }} width="100%" height={120} resizeMode="cover" />
@@ -46,22 +46,28 @@ const CCard = ({ item, onPurchase, balance }) => {
         <Text fontSize="$3" fontWeight="600" textDecorationLine={isPurchased ? 'line-through' : 'none'} fontFamily="$heading" numberOfLines={1}>
           {item.name}
         </Text>
-        <Text fontSize="$2" textDecorationLine={isPurchased ? 'line-through' : 'none'} numberOfLines={2} color="$color11" h={36}>
+        <Text fontSize="$2" textDecorationLine={isPurchased ? 'line-through' : 'none'} numberOfLines={2} color="$color" o={0.7} h={36}>
           {item.description}
         </Text>
         <YStack>
           <XStack jc="space-between" ai="center">
-            <Text fontWeight="600" fontSize="$4" fontFamily="$heading" color={canAfford ? '$color12' : '$color10'}>
-              {item.price} KWD
-            </Text>
-            {!isPurchased && !canAfford && (
-              <Text fontSize="$2" color="$color11">
-                -{remainingAmount} KWD
+            {!canAfford && !isPurchased ? (
+              <XStack gap="$1">
+                <Text fontWeight="600" fontSize="$4" fontFamily="$heading" color="$color11">
+                  {balance}
+                </Text>
+                <Text fontWeight="600" fontSize="$4" fontFamily="$heading" color="$color">
+                  /{item.price} KWD
+                </Text>
+              </XStack>
+            ) : (
+              <Text fontWeight="600" fontSize="$4" fontFamily="$heading" color="$color12">
+                {item.price} KWD
               </Text>
             )}
           </XStack>
           {!isPurchased && !canAfford && (
-            <Progress size="$1" value={progressPercentage} bg="$color1" mt="$2" height="8">
+            <Progress size="$1" value={progressPercentage} bg="$color" mt="$2" height="8">
               <Progress.Indicator animation="bouncy" bg="$color9" />
             </Progress>
           )}
@@ -71,41 +77,52 @@ const CCard = ({ item, onPurchase, balance }) => {
       <Sheet modal animation="medium" open={open} onOpenChange={setOpen} dismissOnSnapToBottom snapPointsMode="fit">
         <Sheet.Overlay />
         <Sheet.Frame padding="$4">
-          <YStack f={1} jc="space-between">
-            <YStack gap="$4" ai="center">
-              <Image source={{ uri: item.image }} width={200} height={200} borderRadius={16} resizeMode="cover" />
+          <YStack f={1} gap="$4">
+            <Image source={{ uri: item.image }} width="100%" height={200} borderRadius={16} resizeMode="cover" />
 
-              <YStack gap="$4" ai="center">
-                <Text fontSize="$6" fontWeight="600" ta="center" fontFamily="$heading">
-                  {item.name}
-                </Text>
-                <Text fontSize="$3" color="$color8" ta="center">
-                  {item.description}
-                </Text>
-
-                <YStack gap="$2" ai="center">
-                  <Text fontSize="$3" color="$color11" ta="center">
-                    Your money now: {balance} KWD
-                  </Text>
-                  <Text fontSize="$3" color="$color11" ta="center">
-                    Item price: -{item.price} KWD
-                  </Text>
-                  <Text fontSize="$3" fontWeight="600" color={remainingBalance >= 0 ? '$color12' : '$color10'} ta="center">
-                    Money left: {remainingBalance} KWD
-                  </Text>
-                </YStack>
-              </YStack>
+            <YStack gap="$2">
+              <Text fontSize="$6" fontWeight="600" fontFamily="$heading">
+                {item.name}
+              </Text>
+              <Text fontSize="$3" color="$color11">
+                {item.description}
+              </Text>
             </YStack>
 
-            <YStack gap="$4" ai="center" w="100%" pt="$2">
-              <YStack gap="$3" w="100%" pb="$4">
-                <Button onPress={handlePurchase} w="100%" size="$5" bg="$color7" fontWeight="600" fontSize="$2" fontFamily="$heading">
-                  Yes, I want to buy this!
-                </Button>
-                <Button onPress={() => setOpen(false)} w="100%" size="$5" fontWeight="600" fontSize="$2" fontFamily="$heading">
-                  No, maybe later
-                </Button>
-              </YStack>
+            <YStack gap="$2" py="$4" borderTopWidth={1} borderBottomWidth={1} borderColor="$color5">
+              <XStack jc="space-between">
+                <Text fontSize="$3" color="$color11">
+                  My Piggy Bank
+                </Text>
+                <Text fontSize="$3" fontWeight="600" color="$color11">
+                  {balance} KWD
+                </Text>
+              </XStack>
+              <XStack jc="space-between">
+                <Text fontSize="$3" color="$color11">
+                  Cost
+                </Text>
+                <Text fontSize="$3" fontWeight="600" color="$color11">
+                  -{item.price} KWD
+                </Text>
+              </XStack>
+              <XStack jc="space-between">
+                <Text fontSize="$3" fontWeight="600">
+                  Coins Left
+                </Text>
+                <Text fontSize="$3" fontWeight="600" color={remainingBalance >= 0 ? '$color12' : '$color10'}>
+                  {remainingBalance} KWD
+                </Text>
+              </XStack>
+            </YStack>
+
+            <YStack gap="$3" w="100%" mb="$6">
+              <Button onPress={handlePurchase} size="$6" bg="$color7" fontWeight="600" fontSize="$3" fontFamily="$heading">
+                Yes! Let's get this reward! 🎉
+              </Button>
+              <Button onPress={() => setOpen(false)} size="$6" fontWeight="600" fontSize="$3" fontFamily="$heading">
+                I'll save up for something else!
+              </Button>
             </YStack>
           </YStack>
         </Sheet.Frame>
@@ -115,17 +132,25 @@ const CCard = ({ item, onPurchase, balance }) => {
         <Sheet.Overlay />
         <Sheet.Frame padding="$4" paddingBottom="$10">
           <YStack gap="$4" ai="center">
-            <Image source={{ uri: item.image }} width="100%" height={250} borderRadius={16} resizeMode="cover" />
-            <YStack gap="$4" mb="$8">
-              <Text fontSize="$6" fontWeight="600" fontFamily="$heading" ta="center">
-                Keep saving! 🎯
+            <Image source={{ uri: item.image }} width="100%" height={200} borderRadius={16} resizeMode="cover" />
+            <YStack gap="$2" mb="$8">
+              <Text fontSize="$6" fontWeight="600" fontFamily="$heading">
+                Almost there! 🎯
               </Text>
-              <Text fontSize="$4" ta="center">
+              <Text fontSize="$3" color="$color11">
                 You need {remainingAmount} KWD more to buy the {item.name}. Keep doing your chores and quizzes to earn more money!
               </Text>
             </YStack>
-            <Button size="$4" theme="active" fontWeight="500" onPress={() => setShowCantAffordSheet(false)} fontFamily="$heading" w="100%">
-              Got it!
+            <Button
+              onPress={() => setShowCantAffordSheet(false)}
+              size="$6"
+              bg="$color7"
+              fontWeight="600"
+              fontSize="$3"
+              fontFamily="$heading"
+              w="100%"
+            >
+              I'll keep saving! 💪
             </Button>
           </YStack>
         </Sheet.Frame>

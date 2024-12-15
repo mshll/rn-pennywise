@@ -102,7 +102,7 @@ export default function ChoresScreen() {
         <YStack f={1} bg="$background" borderTopLeftRadius={32} borderTopRightRadius={32} mt={-32}>
           <YStack f={1} ai="center" jc="flex-start" gap="$4" p="$4">
             <Text fontSize="$5" fontWeight="600" alignSelf="flex-start">
-              Active Chores
+              Today's Fun Tasks
             </Text>
             {activeChores.map((chore) => (
               <ChoreCard key={chore.id} chore={chore} cardTheme={themes[chore.id % themes.length]} onComplete={handleComplete} />
@@ -111,7 +111,7 @@ export default function ChoresScreen() {
             {completedChores.length > 0 && (
               <>
                 <Text fontSize="$5" fontWeight="600" alignSelf="flex-start" mt="$4">
-                  Completed Chores
+                  Completed Tasks 🌟
                 </Text>
                 {completedChores.map((chore) => (
                   <ChoreCard key={chore.id} chore={chore} cardTheme={themes[chore.id % themes.length]} onComplete={handleComplete} />

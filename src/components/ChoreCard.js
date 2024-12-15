@@ -43,37 +43,43 @@ const CCard = ({ chore, onComplete }) => {
         </View>
       </XStack>
 
-      <Sheet modal animation="medium" open={open} onOpenChange={setOpen} snapPoints={[60]}>
+      <Sheet modal animation="medium" open={open} onOpenChange={setOpen} dismissOnSnapToBottom snapPointsMode="fit">
         <Sheet.Overlay />
         <Sheet.Frame padding="$4">
-          <YStack f={1} jc="space-between">
-            <YStack gap="$4" ai="center">
-              <Circle size="$12" bg="$color3">
+          <YStack f={1} gap="$4">
+            <XStack w="100%" jc="center" ai="center">
+              <Circle size="$12" bg="$color4">
                 <Icon name={chore.icon} size={42} color={theme.color.val} />
               </Circle>
+            </XStack>
 
-              <YStack gap="$4" ai="center">
-                <Text fontSize="$6" fontWeight="600" ta="center" fontFamily="$heading">
-                  {chore.title}
-                </Text>
-                <Text fontSize="$3" color="$color8" ta="center">
-                  {chore.description}
-                </Text>
-                <Text fontSize="$5" fontWeight="600" color="$color12" fontFamily="$heading">
-                  {chore.reward_amount} KWD
-                </Text>
-              </YStack>
+            <YStack gap="$2">
+              <Text fontSize="$6" fontWeight="600" fontFamily="$heading">
+                {chore.title}
+              </Text>
+              <Text fontSize="$3" color="$color11">
+                {chore.description}
+              </Text>
             </YStack>
 
-            <YStack gap="$4" ai="center" w="100%" pt="$2">
-              <YStack gap="$3" w="100%" pb="$4">
-                <Button onPress={handleConfirm} w="100%" size="$5" bg="$color7" fontWeight="600" fontSize="$2">
-                  Complete Task
-                </Button>
-                <Button onPress={() => setOpen(false)} w="100%" size="$5" fontWeight="600" fontSize="$2">
-                  Cancel
-                </Button>
-              </YStack>
+            <YStack gap="$2" py="$4" borderTopWidth={1} borderBottomWidth={1} borderColor="$color5">
+              <XStack jc="space-between">
+                <Text fontSize="$3" color="$color11">
+                  Your Reward
+                </Text>
+                <Text fontSize="$3" fontWeight="600" color="$color12">
+                  {chore.reward_amount} KWD
+                </Text>
+              </XStack>
+            </YStack>
+
+            <YStack gap="$3" w="100%" mb="$6">
+              <Button onPress={handleConfirm} size="$6" bg="$color7" fontWeight="600" fontSize="$3" fontFamily="$heading">
+                Hooray! I did it! 🎉
+              </Button>
+              <Button onPress={() => setOpen(false)} size="$6" fontWeight="600" fontSize="$3" fontFamily="$heading">
+                Not yet, still working on it!
+              </Button>
             </YStack>
           </YStack>
         </Sheet.Frame>

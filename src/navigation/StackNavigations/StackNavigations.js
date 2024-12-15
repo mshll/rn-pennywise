@@ -86,7 +86,7 @@ export const ChoresNavigation = createStackNavigator(
     {
       name: 'ChoresScreen',
       component: ChoresScreen,
-      title: 'Chores',
+      title: 'Tasks',
     },
     // Add more screens for Chores stack here
   ],
