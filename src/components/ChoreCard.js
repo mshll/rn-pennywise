@@ -70,7 +70,7 @@ const CCard = ({ chore, onComplete }) => {
                 <Button onPress={handleConfirm} w="100%" size="$5" bg="$color7" fontWeight="600" fontSize="$2">
                   Complete Task
                 </Button>
-                <Button variant="outlined" onPress={() => setOpen(false)} w="100%" size="$5" borderColor="$color7" fontWeight="600" fontSize="$2">
+                <Button onPress={() => setOpen(false)} w="100%" size="$5" fontWeight="600" fontSize="$2">
                   Cancel
                 </Button>
               </YStack>

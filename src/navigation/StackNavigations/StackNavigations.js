@@ -33,11 +33,11 @@ const createScreenOptions = (theme, title) => ({
   },
   headerTransparent: false,
   headerLargeTitleShadowVisible: false,
-  headerLeft: () => (
-    <Pressable onPress={() => console.log('Add task')} style={{ marginLeft: 16 }}>
-      <FontAwesome name="plus" size={24} color={theme.color.val} />
-    </Pressable>
-  ),
+  // headerLeft: () => (
+  //   <Pressable onPress={() => console.log('Add task')} style={{ marginLeft: 16 }}>
+  //     <FontAwesome name="plus" size={24} color={theme.color.val} />
+  //   </Pressable>
+  // ),
 });
 
 const createStackNavigator = (screens, theme) => {
