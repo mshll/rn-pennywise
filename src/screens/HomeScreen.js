@@ -6,7 +6,7 @@ const HomeScreen = () => {
     <View f={1}>
       <YStack f={1} bg="$background" ai="center" jc="center">
         <XStack space="$4" ai="center">
-          <Text fontSize="$6" fontWeight="bold">
+          <Text fontSize="$6" fontWeight="500">
             Pennywise Homescreen
           </Text>
         </XStack>

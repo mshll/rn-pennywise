@@ -1,10 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeNavigation, ChoresNavigation, QuizzesNavigation, StoreNavigation, ProfileNavigation } from '../StackNavigations/StackNavigations';
-import { useTheme } from 'tamagui';
 import { BookText, CircleUserRound, Home, List, Store } from '@tamagui/lucide-icons';
+import { useTheme, Image, Theme } from 'tamagui';
 
 const Tab = createBottomTabNavigator();
-const BottomNavigation = () => {
+
+const BottomNav = () => {
   const theme = useTheme();
 
   return (
@@ -14,7 +15,7 @@ const BottomNavigation = () => {
         tabBarShowLabel: false,
         tabBarLabelPosition: 'beside-icon',
         tabBarStyle: {
-          backgroundColor: theme.background.val,
+          backgroundColor: theme.color5.val,
           borderTopWidth: 0.5,
           borderTopColor: theme.borderColor.val,
           paddingTop: 5,
@@ -42,7 +43,16 @@ const BottomNavigation = () => {
         name="Home"
         component={HomeNavigation}
         options={{
-          tabBarIcon: ({ color, size }) => <Home size={size - 3} color={color} />,
+          tabBarIcon: ({ focused, size }) => (
+            <Image
+              source={require('../../../assets/logo.png')}
+              animation="bouncy"
+              scale={focused ? 1.4 : 1}
+              opacity={focused ? 1 : 0.7}
+              width={size - 10}
+              height={size}
+            />
+          ),
         }}
       />
       <Tab.Screen
@@ -60,6 +70,14 @@ const BottomNavigation = () => {
         }}
       />
     </Tab.Navigator>
+  );
+};
+
+const BottomNavigation = () => {
+  return (
+    <Theme name="green">
+      <BottomNav />
+    </Theme>
   );
 };
 

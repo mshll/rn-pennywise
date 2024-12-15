@@ -1,6 +1,125 @@
 import { config } from '@tamagui/config/v3';
-import { createTamagui } from 'tamagui';
+import { createTamagui, createFont } from 'tamagui';
 
-export const tamaguiConfig = createTamagui(config);
+const fredokaFont = createFont({
+  family: 'Fredoka',
+  size: {
+    1: 12,
+    2: 14,
+    3: 16,
+    4: 18,
+    5: 20,
+    6: 24,
+    7: 28,
+    8: 32,
+    9: 36,
+    10: 40,
+    11: 48,
+    12: 56,
+    13: 64,
+    14: 72,
+  },
+  lineHeight: {
+    1: 17,
+    2: 19,
+    3: 21,
+    4: 23,
+    5: 25,
+    6: 29,
+    7: 33,
+    8: 37,
+    9: 41,
+    10: 45,
+    11: 53,
+    12: 61,
+    13: 69,
+    14: 77,
+  },
+  weight: {
+    300: '300',
+    400: '400',
+    500: '500',
+    600: '600',
+    700: '700',
+  },
+  face: {
+    300: { normal: 'Fredoka_300Light' },
+    400: { normal: 'Fredoka_400Regular' },
+    500: { normal: 'Fredoka_500Medium' },
+    600: { normal: 'Fredoka_600SemiBold' },
+    700: { normal: 'Fredoka_700Bold' },
+  },
+});
+
+const poppinsFont = createFont({
+  family: 'Poppins',
+  size: {
+    1: 12,
+    2: 14,
+    3: 16,
+    4: 18,
+    5: 20,
+    6: 24,
+    7: 28,
+    8: 32,
+    9: 36,
+    10: 40,
+    11: 48,
+    12: 56,
+    13: 64,
+    14: 72,
+  },
+  lineHeight: {
+    1: 17,
+    2: 19,
+    3: 21,
+    4: 23,
+    5: 25,
+    6: 29,
+    7: 33,
+    8: 37,
+    9: 41,
+    10: 45,
+    11: 53,
+    12: 61,
+    13: 69,
+    14: 77,
+  },
+  weight: {
+    100: '100',
+    200: '200',
+    300: '300',
+    400: '400',
+    500: '500',
+    600: '600',
+    700: '700',
+    800: '800',
+    900: '900',
+  },
+  face: {
+    100: { normal: 'Poppins_100Thin' },
+    200: { normal: 'Poppins_200ExtraLight' },
+    300: { normal: 'Poppins_300Light' },
+    400: { normal: 'Poppins_400Regular' },
+    500: { normal: 'Poppins_500Medium' },
+    600: { normal: 'Poppins_600SemiBold' },
+    700: { normal: 'Poppins_700Bold' },
+    800: { normal: 'Poppins_800ExtraBold' },
+    900: { normal: 'Poppins_900Black' },
+  },
+});
+
+const fonts = {
+  heading: fredokaFont,
+  body: poppinsFont,
+  fredoka: fredokaFont,
+  poppins: poppinsFont,
+};
+
+export const tamaguiConfig = createTamagui({
+  ...config,
+  fonts,
+  defaultFont: 'body',
+});
 
 export default tamaguiConfig;
