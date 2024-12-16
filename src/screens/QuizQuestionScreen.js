@@ -4,30 +4,15 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Animated } from 'react-native';
-
-const LEVELS = {
-  Beginner: { icon: 'seedling', color: 'green', description: "Let's start learning!" },
-  Intermediate: { icon: 'tree', color: 'blue', description: 'Growing your knowledge!' },
-  Advanced: { icon: 'crown', color: 'orange', description: 'You are getting better!' },
-  Expert: { icon: 'star', color: 'purple', description: 'Almost a master!' },
-  Master: { icon: 'trophy', color: 'pink', description: 'The ultimate challenge!' },
-};
-
-const CoinAmount = ({ amount, color = '$color', size = '$4' }) => (
-  <XStack ai="center" gap="3">
-    <Text fontWeight="600" fontSize={size} fontFamily="$heading" color={color}>
-      {amount}
-    </Text>
-    <Image source={require('../../assets/images/coin.png')} width={24} height={24} resizeMode="contain" tintColor={color} />
-  </XStack>
-);
+import { QUIZ_LEVELS } from '../data/constants';
+import { CoinAmount } from '../utils/components';
 
 export default function QuizQuestionScreen({ route }) {
   const { quiz } = route.params;
   const navigation = useNavigation();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  const levelInfo = LEVELS[quiz.level];
+  const levelInfo = QUIZ_LEVELS[quiz.level];
 
   const selectedOptionRef = useRef(null);
   const showResultRef = useRef(false);

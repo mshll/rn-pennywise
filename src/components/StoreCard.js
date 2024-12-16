@@ -1,6 +1,7 @@
 import { View, Text, Card, Theme, XStack, YStack, Button, Sheet, Image, useTheme, Progress } from 'tamagui';
 import { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import { CoinAmount } from '../utils/components';
 
 const CCard = ({ item, onPurchase, balance }) => {
   const theme = useTheme();
@@ -27,15 +28,6 @@ const CCard = ({ item, onPurchase, balance }) => {
       }
     }
   };
-
-  const CoinAmount = ({ amount, clr = '$color', fSize = '$6', iSize = 26, ...props }) => (
-    <XStack ai="center" gap="5" {...props}>
-      <Text fontWeight="600" fontSize={fSize} fontFamily="$heading" color={clr}>
-        {amount}
-      </Text>
-      <Image source={require('../../assets/images/coin.png')} width={iSize} height={iSize} resizeMode="contain" tintColor={theme[clr].val} />
-    </XStack>
-  );
 
   return (
     <Card

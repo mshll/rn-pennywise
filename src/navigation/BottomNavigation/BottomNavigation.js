@@ -3,7 +3,7 @@ import { HomeNavigation, ChoresNavigation, QuizzesNavigation, StoreNavigation, P
 import { BookText, CircleUserRound, Home, List, Store } from '@tamagui/lucide-icons';
 import { useTheme, Image, Theme } from 'tamagui';
 import { useNavigationState } from '@react-navigation/native';
-import { getThemeForRoute } from '../../config/theme';
+import { getThemeForRoute } from '../../data/constants';
 
 const Tab = createBottomTabNavigator();
 

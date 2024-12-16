@@ -3,7 +3,8 @@ import { Theme, useTheme, XStack, Text, Image, Avatar, YStack } from 'tamagui';
 import { Pressable, Animated } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ROUTE_THEMES } from '../../config/theme';
+import { ROUTE_THEMES, INITIAL_BALANCE } from '../../data/constants';
+import { CoinAmount } from '../../utils/components';
 
 import HomeScreen from '../../screens/HomeScreen';
 import ChoresScreen from '../../screens/ChoresScreen';
@@ -18,12 +19,9 @@ const HEADER_HEIGHT = 60;
 const LARGE_TITLE_HEIGHT = 120;
 const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
 
-const CoinBalance = ({ balance = 80, theme }) => (
+const CoinBalance = ({ balance = INITIAL_BALANCE, theme }) => (
   <XStack ai="center" gap="5" backgroundColor="$color6" py="7" px="$3" borderRadius="$5">
-    <Text fontWeight="600" fontSize="$5" fontFamily="$heading" color="$color">
-      {balance}
-    </Text>
-    <Image source={require('../../../assets/images/piggy.png')} width={24} height={24} resizeMode="contain" />
+    <CoinAmount amount={balance} />
   </XStack>
 );
 
