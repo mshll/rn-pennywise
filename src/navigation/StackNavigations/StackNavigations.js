@@ -3,11 +3,13 @@ import { Theme, useTheme, XStack, Text, Image, Avatar, YStack } from 'tamagui';
 import { Pressable, Animated } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ROUTE_THEMES } from '../../config/theme';
+import { ROUTE_THEMES, INITIAL_BALANCE } from '../../data/constants';
+import { CoinAmount } from '../../utils/components';
 
 import HomeScreen from '../../screens/HomeScreen';
 import ChoresScreen from '../../screens/ChoresScreen';
 import QuizzesScreen from '../../screens/QuizzesScreen';
+import QuizQuestionScreen from '../../screens/QuizQuestionScreen';
 import StoreScreen from '../../screens/StoreScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
 
@@ -17,12 +19,9 @@ const HEADER_HEIGHT = 60;
 const LARGE_TITLE_HEIGHT = 120;
 const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
 
-const CoinBalance = ({ balance = 80, theme }) => (
+const CoinBalance = ({ balance = INITIAL_BALANCE, theme }) => (
   <XStack ai="center" gap="5" backgroundColor="$color6" py="7" px="$3" borderRadius="$5">
-    <Text fontWeight="600" fontSize="$5" fontFamily="$heading" color="$color">
-      {balance}
-    </Text>
-    <Image source={require('../../../assets/images/piggy.png')} width={24} height={24} resizeMode="contain" />
+    <CoinAmount amount={balance} />
   </XStack>
 );
 
@@ -118,7 +117,13 @@ const createStackNav = (screens, theme) => {
   const NavigatorComponent = () => {
     const themeHook = useTheme();
     return (
-      <Stack.Navigator screenOptions={createScreenOptions(themeHook)}>
+      <Stack.Navigator
+        screenOptions={{
+          ...createScreenOptions(themeHook),
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+        }}
+      >
         {screens.map(({ name, component: Component, title, options = {} }) => (
           <Stack.Screen
             key={name}
@@ -175,7 +180,16 @@ export const QuizzesNavigation = createStackNav(
       component: QuizzesScreen,
       title: 'Quizzes',
     },
-    // Add more screens for Quizzes stack here
+    {
+      name: 'QuizQuestion',
+      component: QuizQuestionScreen,
+      options: {
+        headerShown: false,
+        presentation: 'modal',
+        animation: 'slide_from_bottom',
+        animationEnabled: true,
+      },
+    },
   ],
   ROUTE_THEMES.Quizzes
 );
