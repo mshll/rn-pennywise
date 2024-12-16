@@ -9,7 +9,7 @@ export const QUIZ_LEVELS = {
 export const THEMES = ['red', 'blue', 'green', 'yellow', 'orange', 'pink', 'purple'];
 
 export const ROUTE_THEMES = {
-  Home: 'orange',
+  Home: 'red',
   Chores: 'green',
   Quizzes: 'blue',
   Store: 'purple',
