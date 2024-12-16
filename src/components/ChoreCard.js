@@ -72,7 +72,7 @@ const CCard = ({ chore, onComplete }) => {
 
             <YStack gap="$3" w="100%" mb="$6">
               <Button onPress={handleConfirm} size="$6" bg="$color7" fontWeight="600" fontSize="$3">
-                Hooray! I did it! 🎉
+                I've done it!
               </Button>
               <Button onPress={() => setOpen(false)} size="$6" fontWeight="600" fontSize="$3">
                 Not yet, still working on it!

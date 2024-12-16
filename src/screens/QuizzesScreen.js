@@ -1,16 +1,12 @@
-import { ScrollView, Text, YStack, XStack, Card, Theme, Circle, useTheme } from 'tamagui';
-import { useState, useRef, useLayoutEffect } from 'react';
-import { Animated, Dimensions } from 'react-native';
+import { Text, YStack, XStack, Card, Theme, Circle, useTheme, ScrollView } from 'tamagui';
+import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { quizzes } from '../data/quizzes';
 import { QUIZ_LEVELS } from '../data/constants';
 import { CoinAmount } from '../utils/components';
+import ScreenWrapper from '../components/ScreenWrapper';
 
-const HEADER_HEIGHT = 60;
-const LARGE_TITLE_HEIGHT = 60;
-const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const QuizCard = ({ quiz, onPress }) => {
@@ -50,17 +46,9 @@ const QuizCard = ({ quiz, onPress }) => {
   );
 };
 
-export default function QuizzesScreen() {
+const QuizzesScreen = () => {
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
-  const scrollY = useRef(new Animated.Value(0)).current;
   const theme = useTheme();
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      scrollY,
-    });
-  }, [navigation, scrollY]);
 
   const quizzesByLevel = Object.keys(QUIZ_LEVELS).reduce((acc, level) => {
     acc[level] = quizzes.filter((q) => q.level === level);
@@ -72,38 +60,31 @@ export default function QuizzesScreen() {
   };
 
   return (
-    <Animated.ScrollView
-      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })}
-      scrollEventThrottle={16}
-      style={{ flex: 1, backgroundColor: theme.color2.val }}
-      showsVerticalScrollIndicator={false}
-    >
-      <YStack f={1} backgroundColor="$color2">
-        <YStack f={1} jc="flex-start" gap="$6" pb="$6">
-          {Object.entries(quizzesByLevel).map(
-            ([level, levelQuizzes]) =>
-              levelQuizzes.length > 0 && (
-                <YStack key={level} gap="$3">
-                  <Theme name={QUIZ_LEVELS[level].color}>
-                    <XStack ai="center" gap="$2" px="$4">
-                      <Circle size="$4" bg="$color4">
-                        <Icon name={QUIZ_LEVELS[level].icon} size={16} color={theme.color.val} />
-                      </Circle>
-                      <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
-                        {level}
-                      </Text>
-                    </XStack>
-                  </Theme>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} px="$4">
-                    {levelQuizzes.map((quiz) => (
-                      <QuizCard key={quiz.id} quiz={quiz} onPress={() => handleQuizPress(quiz)} />
-                    ))}
-                  </ScrollView>
-                </YStack>
-              )
-          )}
-        </YStack>
-      </YStack>
-    </Animated.ScrollView>
+    <ScreenWrapper containerProps={{ gap: '$6' }}>
+      {Object.entries(quizzesByLevel).map(
+        ([level, levelQuizzes]) =>
+          levelQuizzes.length > 0 && (
+            <YStack key={level} gap="$3">
+              <Theme name={QUIZ_LEVELS[level].color}>
+                <XStack ai="center" gap="$2">
+                  <Circle size="$4" bg="$color4">
+                    <Icon name={QUIZ_LEVELS[level].icon} size={16} color={theme.color.val} />
+                  </Circle>
+                  <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
+                    {level}
+                  </Text>
+                </XStack>
+              </Theme>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {levelQuizzes.map((quiz) => (
+                  <QuizCard key={quiz.id} quiz={quiz} onPress={() => handleQuizPress(quiz)} />
+                ))}
+              </ScrollView>
+            </YStack>
+          )
+      )}
+    </ScreenWrapper>
   );
-}
+};
+
+export default QuizzesScreen;

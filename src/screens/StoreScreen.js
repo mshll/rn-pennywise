@@ -1,27 +1,12 @@
-import { ScrollView, Text, View, YStack, XStack, useTheme } from 'tamagui';
+import { Text, YStack, useTheme } from 'tamagui';
 import StoreCard from '../components/StoreCard';
-import { useState, useRef, useLayoutEffect } from 'react';
-import { Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useState } from 'react';
 import { storeItems as initialItems } from '../data/storeItems';
 import { THEMES, INITIAL_BALANCE } from '../data/constants';
+import ScreenWrapper from '../components/ScreenWrapper';
 
-const HEADER_HEIGHT = 60;
-const LARGE_TITLE_HEIGHT = 60;
-const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
-
-export default function StoreScreen() {
-  const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
-  const scrollY = useRef(new Animated.Value(0)).current;
+const StoreScreen = () => {
   const theme = useTheme();
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      scrollY,
-    });
-  }, [navigation, scrollY]);
 
   // Mock balance (this would come from a global state or API in the real app)
   const [balance, setBalance] = useState(INITIAL_BALANCE);
@@ -66,36 +51,22 @@ export default function StoreScreen() {
   };
 
   return (
-    <Animated.ScrollView
-      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })}
-      scrollEventThrottle={16}
-      style={{ flex: 1, backgroundColor: theme.color2.val }}
-    >
-      <YStack f={1} backgroundColor="$color2">
-        <YStack f={1} jc="flex-start" gap="$4" px="$4" pb="$6">
-          {renderSection(
-            'Ready to Buy! 🎉',
-            readyToBuyItems.length > 0 ? "You've saved enough coins for these awesome rewards!" : null,
-            readyToBuyItems
-          )}
+    <ScreenWrapper>
+      {renderSection('Ready to Buy! 🎉', readyToBuyItems.length > 0 ? "You've saved enough coins for these awesome rewards!" : null, readyToBuyItems)}
 
-          {renderSection(
-            'Keep Saving! 🎯',
-            keepSavingItems.length > 0 ? 'Almost there! Keep doing your tasks to earn these.' : null,
-            keepSavingItems
-          )}
+      {renderSection('Keep Saving! 🎯', keepSavingItems.length > 0 ? 'Almost there! Keep doing your tasks to earn these.' : null, keepSavingItems)}
 
-          {renderSection('My Rewards 🌟', purchasedItems.length > 0 ? 'Look at all the amazing rewards you earned!' : null, purchasedItems)}
+      {renderSection('My Rewards 🌟', purchasedItems.length > 0 ? 'Look at all the amazing rewards you earned!' : null, purchasedItems)}
 
-          {items.length === 0 && (
-            <YStack ai="center" jc="center" h={200}>
-              <Text fontSize="$4" color="$color11" ta="center">
-                Oops! The treasure shop is empty right now!
-              </Text>
-            </YStack>
-          )}
+      {items.length === 0 && (
+        <YStack ai="center" jc="center" h={200}>
+          <Text fontSize="$4" color="$color11" ta="center">
+            Oops! The treasure shop is empty right now!
+          </Text>
         </YStack>
-      </YStack>
-    </Animated.ScrollView>
+      )}
+    </ScreenWrapper>
   );
-}
+};
+
+export default StoreScreen;

@@ -21,7 +21,7 @@ const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
 
 const CoinBalance = ({ balance = INITIAL_BALANCE, theme }) => (
   <XStack ai="center" gap="5" backgroundColor="$color6" py="7" px="$3" borderRadius="$5">
-    <CoinAmount amount={balance} />
+    <CoinAmount amount={balance} src={require('../../../assets/images/piggy.png')} />
   </XStack>
 );
 

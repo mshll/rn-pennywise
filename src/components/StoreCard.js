@@ -48,7 +48,7 @@ const CCard = ({ item, onPurchase, balance }) => {
           <XStack jc="space-between" ai="center" gap="$2">
             <Text
               fontSize="$5"
-              fontWeight="600"
+              fontWeight="500"
               textDecorationLine={isPurchased ? 'line-through' : 'none'}
               fontFamily="$heading"
               numberOfLines={1}
@@ -59,16 +59,13 @@ const CCard = ({ item, onPurchase, balance }) => {
             </Text>
             {!canAfford && !isPurchased ? (
               <XStack ai="center" gap="$1">
-                <Text fontWeight="600" fontSize="$5" fontFamily="$heading" color="$color11">
-                  {balance}
+                <Text fontWeight="600" fontSize="$6" fontFamily="$heading" color="$color11">
+                  {balance}/
                 </Text>
-                <Text fontWeight="600" fontSize="$5" fontFamily="$heading" color="$color11">
-                  /
-                </Text>
-                <CoinAmount amount={item.price} clr="$color11" fSize="$5" iSize={20} />
+                <CoinAmount amount={item.price} />
               </XStack>
             ) : (
-              <CoinAmount amount={item.price} clr="$color11" fSize="$5" />
+              <CoinAmount amount={item.price} />
             )}
           </XStack>
           {!isPurchased && !canAfford && (
@@ -83,7 +80,7 @@ const CCard = ({ item, onPurchase, balance }) => {
         <Sheet.Overlay />
         <Sheet.Frame padding="$4">
           <YStack f={1} gap="$4">
-            <Image source={{ uri: item.image }} width="100%" height={200} borderRadius={16} resizeMode="cover" />
+            <Image source={{ uri: item.image }} width="100%" height={200} borderRadius={14} resizeMode="cover" />
 
             <YStack gap="$2">
               <Text fontSize="$6" fontWeight="600" fontFamily="$heading">
@@ -122,10 +119,10 @@ const CCard = ({ item, onPurchase, balance }) => {
 
             <YStack gap="$3" w="100%" mb="$6">
               <Button onPress={handlePurchase} size="$6" bg="$color7" fontWeight="600" fontSize="$3">
-                Yes! Let's get this reward!
+                Yes, I want to buy it!
               </Button>
               <Button onPress={() => setOpen(false)} size="$6" fontWeight="600" fontSize="$3">
-                I'll save up for something else!
+                Cancel
               </Button>
             </YStack>
           </YStack>
@@ -134,7 +131,7 @@ const CCard = ({ item, onPurchase, balance }) => {
 
       <Sheet modal animation="medium" open={showCantAffordSheet} onOpenChange={setShowCantAffordSheet} dismissOnSnapToBottom snapPointsMode="fit">
         <Sheet.Overlay />
-        <Sheet.Frame padding="$4" paddingBottom="$10">
+        <Sheet.Frame padding="$4">
           <YStack gap="$4" ai="center">
             <Image source={{ uri: item.image }} width="100%" height={200} borderRadius={16} resizeMode="cover" />
             <YStack gap="$2" mb="$8">
@@ -145,9 +142,11 @@ const CCard = ({ item, onPurchase, balance }) => {
                 You need {remainingAmount} KD more to buy the {item.name}. Keep doing your chores and quizzes to earn more coins!
               </Text>
             </YStack>
-            <Button onPress={() => setShowCantAffordSheet(false)} size="$6" bg="$color7" fontWeight="600" fontSize="$3" w="100%">
-              I'll keep saving! 💪
-            </Button>
+            <YStack gap="$3" w="100%" mb="$6">
+              <Button onPress={() => setShowCantAffordSheet(false)} size="$6" bg="$color7" fontWeight="600" fontSize="$3" w="100%">
+                I'll keep saving!
+              </Button>
+            </YStack>
           </YStack>
         </Sheet.Frame>
       </Sheet>
