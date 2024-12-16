@@ -8,6 +8,7 @@ import { ROUTE_THEMES } from '../../config/theme';
 import HomeScreen from '../../screens/HomeScreen';
 import ChoresScreen from '../../screens/ChoresScreen';
 import QuizzesScreen from '../../screens/QuizzesScreen';
+import QuizQuestionScreen from '../../screens/QuizQuestionScreen';
 import StoreScreen from '../../screens/StoreScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
 
@@ -118,7 +119,13 @@ const createStackNav = (screens, theme) => {
   const NavigatorComponent = () => {
     const themeHook = useTheme();
     return (
-      <Stack.Navigator screenOptions={createScreenOptions(themeHook)}>
+      <Stack.Navigator
+        screenOptions={{
+          ...createScreenOptions(themeHook),
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+        }}
+      >
         {screens.map(({ name, component: Component, title, options = {} }) => (
           <Stack.Screen
             key={name}
@@ -175,7 +182,16 @@ export const QuizzesNavigation = createStackNav(
       component: QuizzesScreen,
       title: 'Quizzes',
     },
-    // Add more screens for Quizzes stack here
+    {
+      name: 'QuizQuestion',
+      component: QuizQuestionScreen,
+      options: {
+        headerShown: false,
+        presentation: 'modal',
+        animation: 'slide_from_bottom',
+        animationEnabled: true,
+      },
+    },
   ],
   ROUTE_THEMES.Quizzes
 );
