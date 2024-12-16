@@ -1,6 +1,15 @@
-import { View, Text, Card, Theme, XStack, Circle, YStack, Button, Sheet, Adapt, Dialog, useTheme } from 'tamagui';
+import { View, Text, Card, Theme, XStack, Circle, YStack, Button, Sheet, Adapt, Dialog, useTheme, Image } from 'tamagui';
 import { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+
+const CoinAmount = ({ amount, color = '$color', size = '$4' }) => (
+  <XStack ai="center" gap="3">
+    <Text fontWeight="600" fontSize={size} fontFamily="$heading" color={color}>
+      {amount}
+    </Text>
+    <Image source={require('../../assets/images/coin.png')} width={24} height={24} resizeMode="contain" tintColor={color} />
+  </XStack>
+);
 
 const CCard = ({ chore, onComplete }) => {
   const theme = useTheme();
@@ -26,20 +35,18 @@ const CCard = ({ chore, onComplete }) => {
       onPress={isCompleted ? undefined : () => setOpen(true)}
       o={isCompleted ? 0.7 : 1}
     >
-      <XStack jc="space-between" ai="center" gap="$2">
+      <XStack jc="space-between" ai="center" gap="7">
         <Circle bg="$color3" size="$4">
           {isCompleted ? <Icon name="check" size={16} color={theme.color.val} /> : <Icon name={chore.icon} size={16} color={theme.color.val} />}
         </Circle>
         <YStack f={1} gap="$1">
-          <Text fontSize="$4" fontWeight="600" textDecorationLine={isCompleted ? 'line-through' : 'none'} fontFamily="$heading">
+          <Text fontSize="$4" fontWeight="500" textDecorationLine={isCompleted ? 'line-through' : 'none'} fontFamily="$heading">
             {chore.title}
           </Text>
-          <Text textDecorationLine={isCompleted ? 'line-through' : 'none'}>{chore.description}</Text>
+          {/* <Text textDecorationLine={isCompleted ? 'line-through' : 'none'}>{chore.description}</Text> */}
         </YStack>
         <View>
-          <Text fontWeight="600" fontSize="$3" fontFamily="$heading">
-            {chore.reward_amount} KWD
-          </Text>
+          <CoinAmount amount={chore.reward_amount} />
         </View>
       </XStack>
 
@@ -63,21 +70,19 @@ const CCard = ({ chore, onComplete }) => {
             </YStack>
 
             <YStack gap="$2" py="$4" borderTopWidth={1} borderBottomWidth={1} borderColor="$color5">
-              <XStack jc="space-between">
+              <XStack jc="space-between" ai="center">
                 <Text fontSize="$3" color="$color11">
                   Your Reward
                 </Text>
-                <Text fontSize="$3" fontWeight="600" color="$color12">
-                  {chore.reward_amount} KWD
-                </Text>
+                <CoinAmount amount={chore.reward_amount} color="$color12" size="$3" />
               </XStack>
             </YStack>
 
             <YStack gap="$3" w="100%" mb="$6">
-              <Button onPress={handleConfirm} size="$6" bg="$color7" fontWeight="600" fontSize="$3" fontFamily="$heading">
+              <Button onPress={handleConfirm} size="$6" bg="$color7" fontWeight="600" fontSize="$3">
                 Hooray! I did it! 🎉
               </Button>
-              <Button onPress={() => setOpen(false)} size="$6" fontWeight="600" fontSize="$3" fontFamily="$heading">
+              <Button onPress={() => setOpen(false)} size="$6" fontWeight="600" fontSize="$3">
                 Not yet, still working on it!
               </Button>
             </YStack>

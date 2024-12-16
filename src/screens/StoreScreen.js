@@ -84,30 +84,21 @@ export default function StoreScreen() {
     }
   };
 
-  // Separate items into three categories
+  // Separate items into categories
   const readyToBuyItems = items.filter((item) => !item.purchasedAt && balance >= item.price);
   const keepSavingItems = items.filter((item) => !item.purchasedAt && balance < item.price);
   const purchasedItems = items.filter((item) => item.purchasedAt);
 
-  const renderItemGrid = (items) => {
-    const rows = [];
-    for (let i = 0; i < items.length; i += 2) {
-      rows.push(
-        <XStack key={i} jc="space-between" w="100%" mb="$1">
-          <StoreCard item={items[i]} cardTheme={themes[items[i].item_id % themes.length]} onPurchase={handlePurchase} balance={balance} />
-          {items[i + 1] && (
-            <StoreCard item={items[i + 1]} cardTheme={themes[items[i + 1].item_id % themes.length]} onPurchase={handlePurchase} balance={balance} />
-          )}
-        </XStack>
-      );
-    }
-    return rows;
+  const renderItems = (items) => {
+    return items.map((item) => (
+      <StoreCard key={item.item_id} item={item} cardTheme={themes[item.item_id % themes.length]} onPurchase={handlePurchase} balance={balance} />
+    ));
   };
 
   const renderSection = (title, subtitle, items, icon) => {
     if (items.length === 0) return null;
     return (
-      <YStack gap="$4" mb="$2">
+      <YStack gap="$4" mb="$4">
         <YStack>
           <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
             {title} {icon}
@@ -118,31 +109,17 @@ export default function StoreScreen() {
             </Text>
           )}
         </YStack>
-        {renderItemGrid(items)}
+        <YStack gap="$3">{renderItems(items)}</YStack>
       </YStack>
     );
   };
 
   return (
-    <>
-      <ScrollView contentInsetAdjustmentBehavior="automatic" backgroundColor="$background" zIndex="2">
+    <YStack>
+      <ScrollView backgroundColor="$color2" zIndex="2">
         <View bg="$color5" height={32} />
-        <YStack f={1} bg="$background" borderTopLeftRadius={32} borderTopRightRadius={32} mt={-32}>
-          <YStack f={1} jc="flex-start" gap="$4" p="$4">
-            <XStack jc="space-between" ai="center" mb="$2">
-              <Text fontSize="$6" fontWeight="700" fontFamily="$heading">
-                My Rewards
-              </Text>
-              <YStack ai="flex-end">
-                <Text fontSize="$6" fontWeight="700" fontFamily="$heading" color="$color12">
-                  {balance} KWD
-                </Text>
-                <Text fontSize="$2" color="$color11" fontWeight="500">
-                  My Piggy Bank
-                </Text>
-              </YStack>
-            </XStack>
-
+        <YStack f={1} bg="$color2" borderTopLeftRadius={32} borderTopRightRadius={32} mt={-32}>
+          <YStack f={1} jc="flex-start" gap="$4" px="$4" py="$6">
             {renderSection(
               'Ready to Buy! 🎉',
               readyToBuyItems.length > 0 ? "You've saved enough coins for these awesome rewards!" : null,
@@ -167,6 +144,6 @@ export default function StoreScreen() {
           </YStack>
         </YStack>
       </ScrollView>
-    </>
+    </YStack>
   );
 }

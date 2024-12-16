@@ -97,12 +97,12 @@ export default function ChoresScreen() {
 
   return (
     <>
-      <ScrollView contentInsetAdjustmentBehavior="automatic" backgroundColor="$background" zIndex="2">
+      <ScrollView contentInsetAdjustmentBehavior="automatic" backgroundColor="$color2" zIndex="2">
         <View bg="$color5" height={32} />
-        <YStack f={1} bg="$background" borderTopLeftRadius={32} borderTopRightRadius={32} mt={-32}>
-          <YStack f={1} ai="center" jc="flex-start" gap="$4" p="$4">
+        <YStack f={1} bg="$color2" borderTopLeftRadius={32} borderTopRightRadius={32} mt={-32}>
+          <YStack f={1} ai="center" jc="flex-start" gap="$4" px="$4" py="$6">
             <Text fontSize="$5" fontWeight="600" alignSelf="flex-start">
-              Today's Fun Tasks
+              Today's Tasks
             </Text>
             {activeChores.map((chore) => (
               <ChoreCard key={chore.id} chore={chore} cardTheme={themes[chore.id % themes.length]} onComplete={handleComplete} />

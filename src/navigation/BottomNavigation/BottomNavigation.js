@@ -19,13 +19,13 @@ const BottomNav = () => {
         tabBarShowLabel: false,
         tabBarLabelPosition: 'beside-icon',
         tabBarStyle: {
-          backgroundColor: theme.color5.val,
+          backgroundColor: theme.color2.val,
           borderTopWidth: 0.5,
           borderTopColor: theme.borderColor.val,
           paddingTop: 5,
         },
-        tabBarActiveTintColor: theme.color.val,
-        tabBarInactiveTintColor: theme.placeholderColor.val,
+        tabBarActiveTintColor: theme.color11.val,
+        tabBarInactiveTintColor: theme.color7.val,
       }}
       initialRouteName="Home"
     >

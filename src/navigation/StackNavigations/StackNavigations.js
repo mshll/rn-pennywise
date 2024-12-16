@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Theme, useTheme } from 'tamagui';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Theme, useTheme, XStack, Text, Image, Avatar } from 'tamagui';
 import { Pressable } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { ROUTE_THEMES } from '../../config/theme';
@@ -11,6 +12,15 @@ import StoreScreen from '../../screens/StoreScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
+
+const CoinBalance = ({ balance = 80, theme }) => (
+  <XStack ai="center" gap="5" backgroundColor="$color6" py="7" px="$3" borderRadius="$5">
+    <Text fontWeight="600" fontSize="$5" fontFamily="$heading" color="$color">
+      {balance}
+    </Text>
+    <Image source={require('../../../assets/images/piggy.png')} width={24} height={24} resizeMode="contain" />
+  </XStack>
+);
 
 const createScreenOptions = (theme, title) => ({
   title,
@@ -33,14 +43,16 @@ const createScreenOptions = (theme, title) => ({
   },
   headerTransparent: false,
   headerLargeTitleShadowVisible: false,
-  // headerLeft: () => (
-  //   <Pressable onPress={() => console.log('Add task')} style={{ marginLeft: 16 }}>
-  //     <FontAwesome name="plus" size={24} color={theme.color.val} />
-  //   </Pressable>
-  // ),
+  headerRight: () => <CoinBalance theme={theme} />,
+  headerLeft: () => (
+    <Avatar circular size="$4" mr="$3" borderWidth={'$1'} borderColor={theme.color6.val}>
+      <Avatar.Image source={{ uri: 'https://placecats.com/200/200' }} objectFit="cover" />
+      <Avatar.Fallback backgroundColor="$color6" />
+    </Avatar>
+  ),
 });
 
-const createStackNavigator = (screens, theme) => {
+const createStackNav = (screens, theme) => {
   const NavigatorComponent = () => {
     const themeHook = useTheme();
     return (
@@ -68,7 +80,7 @@ const createStackNavigator = (screens, theme) => {
 };
 
 // Home Stack
-export const HomeNavigation = createStackNavigator(
+export const HomeNavigation = createStackNav(
   [
     {
       name: 'HomeScreen',
@@ -81,7 +93,7 @@ export const HomeNavigation = createStackNavigator(
 );
 
 // Chores Stack
-export const ChoresNavigation = createStackNavigator(
+export const ChoresNavigation = createStackNav(
   [
     {
       name: 'ChoresScreen',
@@ -94,7 +106,7 @@ export const ChoresNavigation = createStackNavigator(
 );
 
 // Quizzes Stack
-export const QuizzesNavigation = createStackNavigator(
+export const QuizzesNavigation = createStackNav(
   [
     {
       name: 'QuizzesScreen',
@@ -107,7 +119,7 @@ export const QuizzesNavigation = createStackNavigator(
 );
 
 // Store Stack
-export const StoreNavigation = createStackNavigator(
+export const StoreNavigation = createStackNav(
   [
     {
       name: 'StoreScreen',
@@ -120,7 +132,7 @@ export const StoreNavigation = createStackNavigator(
 );
 
 // Profile Stack
-export const ProfileNavigation = createStackNavigator(
+export const ProfileNavigation = createStackNav(
   [
     {
       name: 'ProfileScreen',

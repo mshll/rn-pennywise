@@ -28,11 +28,20 @@ const CCard = ({ item, onPurchase, balance }) => {
     }
   };
 
+  const CoinAmount = ({ amount, clr = '$color', fSize = '$6', iSize = 26, ...props }) => (
+    <XStack ai="center" gap="5" {...props}>
+      <Text fontWeight="600" fontSize={fSize} fontFamily="$heading" color={clr}>
+        {amount}
+      </Text>
+      <Image source={require('../../assets/images/coin.png')} width={iSize} height={iSize} resizeMode="contain" tintColor={theme[clr].val} />
+    </XStack>
+  );
+
   return (
     <Card
-      bg={isPurchased ? '$color5' : canAfford ? '$color6' : '$color6'}
+      bg={isPurchased ? '$color5' : canAfford ? '$color6' : '$color5'}
       br="$6"
-      w="48%"
+      w="100%"
       bc="$color4"
       borderBottomWidth={4}
       pressStyle={!isPurchased ? { scale: 0.95 } : undefined}
@@ -41,33 +50,37 @@ const CCard = ({ item, onPurchase, balance }) => {
       o={isPurchased ? 0.7 : 1}
       overflow="hidden"
     >
-      <Image source={{ uri: item.image }} width="100%" height={120} resizeMode="cover" />
-      <YStack p="$3" gap="$2">
-        <Text fontSize="$3" fontWeight="600" textDecorationLine={isPurchased ? 'line-through' : 'none'} fontFamily="$heading" numberOfLines={1}>
-          {item.name}
-        </Text>
-        <Text fontSize="$2" textDecorationLine={isPurchased ? 'line-through' : 'none'} numberOfLines={2} color="$color" o={0.7} h={36}>
-          {item.description}
-        </Text>
-        <YStack>
-          <XStack jc="space-between" ai="center">
+      <YStack>
+        <Image source={{ uri: item.image }} width="100%" height={200} resizeMode="cover" />
+        <YStack p="$3" gap="$2">
+          <XStack jc="space-between" ai="center" gap="$2">
+            <Text
+              fontSize="$5"
+              fontWeight="600"
+              textDecorationLine={isPurchased ? 'line-through' : 'none'}
+              fontFamily="$heading"
+              numberOfLines={1}
+              f={1}
+              color="$color12"
+            >
+              {item.name}
+            </Text>
             {!canAfford && !isPurchased ? (
-              <XStack gap="$1">
-                <Text fontWeight="600" fontSize="$4" fontFamily="$heading" color="$color11">
+              <XStack ai="center" gap="$1">
+                <Text fontWeight="600" fontSize="$5" fontFamily="$heading" color="$color11">
                   {balance}
                 </Text>
-                <Text fontWeight="600" fontSize="$4" fontFamily="$heading" color="$color">
-                  /{item.price} KWD
+                <Text fontWeight="600" fontSize="$5" fontFamily="$heading" color="$color11">
+                  /
                 </Text>
+                <CoinAmount amount={item.price} clr="$color11" fSize="$5" iSize={20} />
               </XStack>
             ) : (
-              <Text fontWeight="600" fontSize="$4" fontFamily="$heading" color="$color12">
-                {item.price} KWD
-              </Text>
+              <CoinAmount amount={item.price} clr="$color11" fSize="$5" />
             )}
           </XStack>
           {!isPurchased && !canAfford && (
-            <Progress size="$1" value={progressPercentage} bg="$color" mt="$2" height="8">
+            <Progress size="$2" value={progressPercentage} bg="$color4" mt="$2">
               <Progress.Indicator animation="bouncy" bg="$color9" />
             </Progress>
           )}
@@ -90,37 +103,36 @@ const CCard = ({ item, onPurchase, balance }) => {
             </YStack>
 
             <YStack gap="$2" py="$4" borderTopWidth={1} borderBottomWidth={1} borderColor="$color5">
-              <XStack jc="space-between">
+              <XStack jc="space-between" ai="center">
                 <Text fontSize="$3" color="$color11">
                   My Piggy Bank
                 </Text>
-                <Text fontSize="$3" fontWeight="600" color="$color11">
-                  {balance} KWD
-                </Text>
+                <CoinAmount amount={balance} clr="$color11" />
               </XStack>
-              <XStack jc="space-between">
+              <XStack jc="space-between" ai="center">
                 <Text fontSize="$3" color="$color11">
                   Cost
                 </Text>
-                <Text fontSize="$3" fontWeight="600" color="$color11">
-                  -{item.price} KWD
-                </Text>
+                <XStack ai="center" gap="$1">
+                  <Text fontSize="$3" fontWeight="600" color="$color11">
+                    -
+                  </Text>
+                  <CoinAmount amount={item.price} clr="$color11" />
+                </XStack>
               </XStack>
-              <XStack jc="space-between">
+              <XStack jc="space-between" ai="center">
                 <Text fontSize="$3" fontWeight="600">
                   Coins Left
                 </Text>
-                <Text fontSize="$3" fontWeight="600" color={remainingBalance >= 0 ? '$color12' : '$color10'}>
-                  {remainingBalance} KWD
-                </Text>
+                <CoinAmount amount={remainingBalance} clr={remainingBalance >= 0 ? '$color12' : '$color10'} />
               </XStack>
             </YStack>
 
             <YStack gap="$3" w="100%" mb="$6">
-              <Button onPress={handlePurchase} size="$6" bg="$color7" fontWeight="600" fontSize="$3" fontFamily="$heading">
-                Yes! Let's get this reward! 🎉
+              <Button onPress={handlePurchase} size="$6" bg="$color7" fontWeight="600" fontSize="$3">
+                Yes! Let's get this reward!
               </Button>
-              <Button onPress={() => setOpen(false)} size="$6" fontWeight="600" fontSize="$3" fontFamily="$heading">
+              <Button onPress={() => setOpen(false)} size="$6" fontWeight="600" fontSize="$3">
                 I'll save up for something else!
               </Button>
             </YStack>
@@ -138,18 +150,10 @@ const CCard = ({ item, onPurchase, balance }) => {
                 Almost there! 🎯
               </Text>
               <Text fontSize="$3" color="$color11">
-                You need {remainingAmount} KWD more to buy the {item.name}. Keep doing your chores and quizzes to earn more money!
+                You need {remainingAmount} KD more to buy the {item.name}. Keep doing your chores and quizzes to earn more coins!
               </Text>
             </YStack>
-            <Button
-              onPress={() => setShowCantAffordSheet(false)}
-              size="$6"
-              bg="$color7"
-              fontWeight="600"
-              fontSize="$3"
-              fontFamily="$heading"
-              w="100%"
-            >
+            <Button onPress={() => setShowCantAffordSheet(false)} size="$6" bg="$color7" fontWeight="600" fontSize="$3" w="100%">
               I'll keep saving! 💪
             </Button>
           </YStack>
