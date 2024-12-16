@@ -1,8 +1,32 @@
-import { ScrollView, Text, View, YStack } from 'tamagui';
+import { ScrollView, Text, useTheme, View, YStack } from 'tamagui';
 import ChoreCard from '../components/ChoreCard';
-import { useState } from 'react';
+import { useState, useRef, useLayoutEffect } from 'react';
+import { Animated } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const HEADER_HEIGHT = 60;
+const LARGE_TITLE_HEIGHT = 60;
+const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
 
 export default function ChoresScreen() {
+  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const theme = useTheme();
+
+  const paddingTop = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [HEADER_HEIGHT + LARGE_TITLE_HEIGHT + insets.top, HEADER_HEIGHT + insets.top],
+    extrapolate: 'clamp',
+  });
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      scrollY,
+    });
+  }, [navigation, scrollY]);
+
   const [chores, setChores] = useState([
     {
       id: 1,
@@ -96,31 +120,32 @@ export default function ChoresScreen() {
   const completedChores = chores.filter((chore) => chore.status === 'COMPLETED');
 
   return (
-    <>
-      <ScrollView contentInsetAdjustmentBehavior="automatic" backgroundColor="$color2" zIndex="2">
-        <View bg="$color5" height={32} />
-        <YStack f={1} bg="$color2" borderTopLeftRadius={32} borderTopRightRadius={32} mt={-32}>
-          <YStack f={1} ai="center" jc="flex-start" gap="$4" px="$4" py="$6">
-            <Text fontSize="$5" fontWeight="600" alignSelf="flex-start">
-              Today's Tasks
-            </Text>
-            {activeChores.map((chore) => (
-              <ChoreCard key={chore.id} chore={chore} cardTheme={themes[chore.id % themes.length]} onComplete={handleComplete} />
-            ))}
+    <Animated.ScrollView
+      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })}
+      scrollEventThrottle={16}
+      style={{ flex: 1, backgroundColor: theme.color2.val }}
+    >
+      <YStack f={1} backgroundColor="$color2">
+        <YStack f={1} ai="center" jc="flex-start" gap="$4" px="$4" pb="$6">
+          <Text fontSize="$5" fontWeight="600" alignSelf="flex-start">
+            Today's Tasks
+          </Text>
+          {activeChores.map((chore) => (
+            <ChoreCard key={chore.id} chore={chore} cardTheme={themes[chore.id % themes.length]} onComplete={handleComplete} />
+          ))}
 
-            {completedChores.length > 0 && (
-              <>
-                <Text fontSize="$5" fontWeight="600" alignSelf="flex-start" mt="$4">
-                  Completed Tasks 🌟
-                </Text>
-                {completedChores.map((chore) => (
-                  <ChoreCard key={chore.id} chore={chore} cardTheme={themes[chore.id % themes.length]} onComplete={handleComplete} />
-                ))}
-              </>
-            )}
-          </YStack>
+          {completedChores.length > 0 && (
+            <>
+              <Text fontSize="$5" fontWeight="600" alignSelf="flex-start" mt="$4">
+                Completed Tasks 🌟
+              </Text>
+              {completedChores.map((chore) => (
+                <ChoreCard key={chore.id} chore={chore} cardTheme={themes[chore.id % themes.length]} onComplete={handleComplete} />
+              ))}
+            </>
+          )}
         </YStack>
-      </ScrollView>
-    </>
+      </YStack>
+    </Animated.ScrollView>
   );
 }

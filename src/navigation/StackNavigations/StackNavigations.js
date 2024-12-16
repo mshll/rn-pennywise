@@ -1,8 +1,8 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Theme, useTheme, XStack, Text, Image, Avatar } from 'tamagui';
-import { Pressable } from 'react-native';
+import { Theme, useTheme, XStack, Text, Image, Avatar, YStack } from 'tamagui';
+import { Pressable, Animated } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ROUTE_THEMES } from '../../config/theme';
 
 import HomeScreen from '../../screens/HomeScreen';
@@ -11,7 +11,11 @@ import QuizzesScreen from '../../screens/QuizzesScreen';
 import StoreScreen from '../../screens/StoreScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
+
+const HEADER_HEIGHT = 60;
+const LARGE_TITLE_HEIGHT = 120;
+const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
 
 const CoinBalance = ({ balance = 80, theme }) => (
   <XStack ai="center" gap="5" backgroundColor="$color6" py="7" px="$3" borderRadius="$5">
@@ -22,41 +26,99 @@ const CoinBalance = ({ balance = 80, theme }) => (
   </XStack>
 );
 
-const createScreenOptions = (theme, title) => ({
-  title,
-  headerStyle: {
-    backgroundColor: theme.color5.val,
-  },
-  headerTitleStyle: {
-    color: theme.color.val,
-    fontSize: 20,
-    fontFamily: 'Fredoka_600SemiBold',
-  },
-  headerLargeTitle: true,
-  headerLargeStyle: {
-    backgroundColor: theme.color5.val,
-  },
-  headerLargeTitleStyle: {
-    color: theme.color.val,
-    fontSize: 38,
-    fontFamily: 'Fredoka_600SemiBold',
-  },
+const CustomHeader = ({ navigation, route, options, back }) => {
+  const theme = useTheme();
+  const insets = useSafeAreaInsets();
+  const title = options?.title ?? route?.name;
+  const scrollY = options.scrollY || new Animated.Value(0);
+
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  const smallTitleOpacity = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+
+  const largeTitleHeight = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [LARGE_TITLE_HEIGHT, 0],
+    extrapolate: 'clamp',
+  });
+
+  const borderRadius = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [36, 0],
+    extrapolate: 'clamp',
+  });
+
+  return (
+    <YStack backgroundColor={theme.color5.val} pt={insets.top}>
+      <YStack backgroundColor={theme.color5.val}>
+        <XStack height={HEADER_HEIGHT} ai="center" jc="space-between" px="$3">
+          <XStack ai="center" gap="$3" f={1}>
+            <Avatar circular size="$4" borderWidth={'$1'} borderColor={theme.color6.val}>
+              <Avatar.Image source={{ uri: 'https://placecats.com/200/200' }} objectFit="cover" />
+              <Avatar.Fallback backgroundColor="$color6" />
+            </Avatar>
+            <Animated.Text
+              style={{
+                opacity: smallTitleOpacity,
+                color: theme.color.val,
+                fontSize: 20,
+                fontFamily: 'Fredoka_600SemiBold',
+              }}
+            >
+              {title}
+            </Animated.Text>
+          </XStack>
+          <CoinBalance theme={theme} />
+        </XStack>
+
+        <Animated.View
+          style={{
+            height: largeTitleHeight,
+            opacity: titleOpacity,
+            justifyContent: 'flex-end',
+            backgroundColor: theme.color5.val,
+          }}
+        >
+          <Animated.View style={{ paddingHorizontal: 16, paddingBottom: 10, justifyContent: 'flex-end', flex: 1 }}>
+            <Text color={theme.color.val} fontSize={42} fontFamily="Fredoka_600SemiBold">
+              {title}
+            </Text>
+          </Animated.View>
+          <Animated.View
+            style={{
+              height: 30,
+              backgroundColor: theme.color2.val,
+              borderTopLeftRadius: borderRadius,
+              borderTopRightRadius: borderRadius,
+              width: '100%',
+            }}
+          />
+        </Animated.View>
+      </YStack>
+    </YStack>
+  );
+};
+
+const createScreenOptions = (theme) => ({
+  header: (props) => <CustomHeader {...props} />,
+  headerMode: 'screen',
+  cardStyle: { backgroundColor: theme.background.val },
   headerTransparent: false,
-  headerLargeTitleShadowVisible: false,
-  headerRight: () => <CoinBalance theme={theme} />,
-  headerLeft: () => (
-    <Avatar circular size="$4" mr="$3" borderWidth={'$1'} borderColor={theme.color6.val}>
-      <Avatar.Image source={{ uri: 'https://placecats.com/200/200' }} objectFit="cover" />
-      <Avatar.Fallback backgroundColor="$color6" />
-    </Avatar>
-  ),
 });
 
 const createStackNav = (screens, theme) => {
   const NavigatorComponent = () => {
     const themeHook = useTheme();
     return (
-      <Stack.Navigator screenOptions={createScreenOptions(themeHook, screens[0].title)}>
+      <Stack.Navigator screenOptions={createScreenOptions(themeHook)}>
         {screens.map(({ name, component: Component, title, options = {} }) => (
           <Stack.Screen
             key={name}
