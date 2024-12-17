@@ -1,50 +1,134 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Theme, useTheme } from 'tamagui';
-import { Pressable } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Theme, useTheme, XStack, Text, Image, Avatar, YStack } from 'tamagui';
+import { Pressable, Animated } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { ROUTE_THEMES } from '../../config/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ROUTE_THEMES, INITIAL_BALANCE } from '../../data/constants';
+import { CoinAmount } from '../../utils/components';
 
 import HomeScreen from '../../screens/HomeScreen';
 import ChoresScreen from '../../screens/ChoresScreen';
 import QuizzesScreen from '../../screens/QuizzesScreen';
+import QuizQuestionScreen from '../../screens/QuizQuestionScreen';
 import StoreScreen from '../../screens/StoreScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
-const createScreenOptions = (theme, title) => ({
-  title,
-  headerStyle: {
-    backgroundColor: theme.color5.val,
-  },
-  headerTitleStyle: {
-    color: theme.color.val,
-    fontSize: 20,
-    fontFamily: 'Fredoka_600SemiBold',
-  },
-  headerLargeTitle: true,
-  headerLargeStyle: {
-    backgroundColor: theme.color5.val,
-  },
-  headerLargeTitleStyle: {
-    color: theme.color.val,
-    fontSize: 38,
-    fontFamily: 'Fredoka_600SemiBold',
-  },
+const HEADER_HEIGHT = 60;
+const LARGE_TITLE_HEIGHT = 120;
+const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
+
+const CoinBalance = ({ balance = INITIAL_BALANCE, theme }) => (
+  <XStack ai="center" gap="5" backgroundColor="$color6" py="7" px="$3" borderRadius="$5">
+    <CoinAmount amount={balance} src={require('../../../assets/images/piggy.png')} />
+  </XStack>
+);
+
+const CustomHeader = ({ navigation, route, options, back }) => {
+  const theme = useTheme();
+  const insets = useSafeAreaInsets();
+  const title = options?.title ?? route?.name;
+  const scrollY = options.scrollY || new Animated.Value(0);
+  const isProfileScreen = route.name === 'ProfileScreen';
+
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  const smallTitleOpacity = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+
+  const largeTitleHeight = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [LARGE_TITLE_HEIGHT, 0],
+    extrapolate: 'clamp',
+  });
+
+  const borderRadius = scrollY.interpolate({
+    inputRange: [0, SCROLL_THRESHOLD],
+    outputRange: [36, 0],
+    extrapolate: 'clamp',
+  });
+
+  return (
+    <YStack backgroundColor={theme.color5.val} pt={insets.top}>
+      <YStack backgroundColor={theme.color5.val}>
+        <XStack height={HEADER_HEIGHT} ai="center" jc="space-between" px="$3">
+          <XStack ai="center" gap="$3" f={1}>
+            {isProfileScreen ? (
+              <Image source={require('../../../assets/pennywise-logo.png')} width={40} height={40} resizeMode="contain" tintColor={theme.color.val} />
+            ) : (
+              <Avatar circular size="$4" borderWidth={'$1'} borderColor={theme.color6.val}>
+                <Avatar.Image source={{ uri: 'https://placecatss.com/200/200' }} />
+                <Avatar.Fallback backgroundColor="$color6" />
+              </Avatar>
+            )}
+            <Animated.Text
+              style={{
+                opacity: smallTitleOpacity,
+                color: theme.color.val,
+                fontSize: 20,
+                fontFamily: 'Fredoka_600SemiBold',
+              }}
+            >
+              {title}
+            </Animated.Text>
+          </XStack>
+          <CoinBalance theme={theme} />
+        </XStack>
+
+        <Animated.View
+          style={{
+            height: largeTitleHeight,
+            opacity: titleOpacity,
+            justifyContent: 'flex-end',
+            backgroundColor: theme.color5.val,
+          }}
+        >
+          <Animated.View style={{ paddingHorizontal: 16, paddingBottom: 10, justifyContent: 'flex-end', flex: 1 }}>
+            <Text color={theme.color.val} fontSize={42} fontFamily="Fredoka_600SemiBold">
+              {title}
+            </Text>
+          </Animated.View>
+          <Animated.View
+            style={{
+              height: 30,
+              backgroundColor: theme.color2.val,
+              borderTopLeftRadius: borderRadius,
+              borderTopRightRadius: borderRadius,
+              width: '100%',
+            }}
+          />
+        </Animated.View>
+      </YStack>
+    </YStack>
+  );
+};
+
+const createScreenOptions = (theme) => ({
+  header: (props) => <CustomHeader {...props} />,
+  headerMode: 'screen',
+  cardStyle: { backgroundColor: theme.background.val },
   headerTransparent: false,
-  headerLargeTitleShadowVisible: false,
-  headerLeft: () => (
-    <Pressable onPress={() => console.log('Add task')} style={{ marginLeft: 16 }}>
-      <FontAwesome name="plus" size={24} color={theme.color.val} />
-    </Pressable>
-  ),
 });
 
-const createStackNavigator = (screens, theme) => {
+const createStackNav = (screens, theme) => {
   const NavigatorComponent = () => {
     const themeHook = useTheme();
     return (
-      <Stack.Navigator screenOptions={createScreenOptions(themeHook, screens[0].title)}>
+      <Stack.Navigator
+        screenOptions={{
+          ...createScreenOptions(themeHook),
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+        }}
+      >
         {screens.map(({ name, component: Component, title, options = {} }) => (
           <Stack.Screen
             key={name}
@@ -68,7 +152,7 @@ const createStackNavigator = (screens, theme) => {
 };
 
 // Home Stack
-export const HomeNavigation = createStackNavigator(
+export const HomeNavigation = createStackNav(
   [
     {
       name: 'HomeScreen',
@@ -81,12 +165,12 @@ export const HomeNavigation = createStackNavigator(
 );
 
 // Chores Stack
-export const ChoresNavigation = createStackNavigator(
+export const ChoresNavigation = createStackNav(
   [
     {
       name: 'ChoresScreen',
       component: ChoresScreen,
-      title: 'Chores',
+      title: 'Tasks',
     },
     // Add more screens for Chores stack here
   ],
@@ -94,20 +178,29 @@ export const ChoresNavigation = createStackNavigator(
 );
 
 // Quizzes Stack
-export const QuizzesNavigation = createStackNavigator(
+export const QuizzesNavigation = createStackNav(
   [
     {
       name: 'QuizzesScreen',
       component: QuizzesScreen,
       title: 'Quizzes',
     },
-    // Add more screens for Quizzes stack here
+    {
+      name: 'QuizQuestion',
+      component: QuizQuestionScreen,
+      options: {
+        headerShown: false,
+        presentation: 'modal',
+        animation: 'slide_from_bottom',
+        animationEnabled: true,
+      },
+    },
   ],
   ROUTE_THEMES.Quizzes
 );
 
 // Store Stack
-export const StoreNavigation = createStackNavigator(
+export const StoreNavigation = createStackNav(
   [
     {
       name: 'StoreScreen',
@@ -120,7 +213,7 @@ export const StoreNavigation = createStackNavigator(
 );
 
 // Profile Stack
-export const ProfileNavigation = createStackNavigator(
+export const ProfileNavigation = createStackNav(
   [
     {
       name: 'ProfileScreen',

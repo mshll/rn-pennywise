@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HomeNavigation, ChoresNavigation, QuizzesNavigation, StoreNavigation, ProfileNavigation } from '../StackNavigations/StackNavigations';
-import { BookText, CircleUserRound, Home, List, Store } from '@tamagui/lucide-icons';
+import { HomeNavigation, ChildrenNavigation, StoreNavigation, ProfileNavigation, TasksNavigation } from './ParentStackNavigations';
+import { Home, Users, Store, CircleUserRound, ListCheck } from '@tamagui/lucide-icons';
 import { useTheme, Image, Theme } from 'tamagui';
 import { useNavigationState } from '@react-navigation/native';
 import { getThemeForRoute } from '../../data/constants';
@@ -12,10 +12,10 @@ const BottomNav = () => {
   const state = useNavigationState((state) => state);
   const currentRoute = state?.routes[state.index]?.name || 'Home';
 
-  // Check if we're in the QuizQuestion screen
-  const isQuizQuestion = state?.routes?.some((route) => {
-    if (route.name === 'Quizzes' && route.state?.routes) {
-      return route.state.routes.some((r) => r.name === 'QuizQuestion');
+  // Check if we're in a modal screen
+  const isModal = state?.routes?.some((route) => {
+    if (route.state?.routes) {
+      return route.state.routes.some((r) => ['AddChildScreen', 'AddChoreScreen', 'AddStoreItemScreen'].includes(r.name));
     }
     return false;
   });
@@ -31,7 +31,7 @@ const BottomNav = () => {
           borderTopWidth: 0.5,
           borderTopColor: theme.borderColor.val,
           paddingTop: 5,
-          display: isQuizQuestion ? 'none' : 'flex',
+          display: isModal ? 'none' : 'flex',
         },
         tabBarActiveTintColor: theme.color11.val,
         tabBarInactiveTintColor: theme.color7.val,
@@ -39,17 +39,17 @@ const BottomNav = () => {
       initialRouteName="Home"
     >
       <Tab.Screen
-        name="Quizzes"
-        component={QuizzesNavigation}
+        name="Children"
+        component={ChildrenNavigation}
         options={{
-          tabBarIcon: ({ color, size }) => <BookText size={size - 3} color={color} />,
+          tabBarIcon: ({ color, size }) => <Users size={size - 3} color={color} />,
         }}
       />
       <Tab.Screen
-        name="Chores"
-        component={ChoresNavigation}
+        name="Tasks"
+        component={TasksNavigation}
         options={{
-          tabBarIcon: ({ color, size }) => <List size={size - 3} color={color} />,
+          tabBarIcon: ({ color, size }) => <ListCheck size={size - 3} color={color} />,
         }}
       />
       <Tab.Screen
@@ -60,7 +60,6 @@ const BottomNav = () => {
             <Image
               source={require('../../../assets/pennywise-logo.png')}
               animation="bouncy"
-              // scale={focused ? 1.4 : 1}
               scale={1.5}
               opacity={focused ? 1 : 0.7}
               width={size - 10}
@@ -88,7 +87,7 @@ const BottomNav = () => {
   );
 };
 
-const BottomNavigation = () => {
+const ParentBottomNavigation = () => {
   const state = useNavigationState((state) => state);
   const currentRoute = state?.routes[state.index]?.name || 'Home';
   const currentTheme = getThemeForRoute(currentRoute);
@@ -100,4 +99,4 @@ const BottomNavigation = () => {
   );
 };
 
-export default BottomNavigation;
+export default ParentBottomNavigation;
