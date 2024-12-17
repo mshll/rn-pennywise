@@ -9,6 +9,8 @@ import { storeItems } from '../data/storeItems';
 import { INITIAL_BALANCE } from '../data/constants';
 import { CoinAmount } from '../utils/components';
 import ScreenWrapper from '../components/ScreenWrapper';
+import { deleteToken } from '../api/storage';
+import { useAuth } from '../context/AuthContext';
 
 const StatCard = ({ icon, title, value, theme: cardTheme }) => {
   const theme = useTheme();
@@ -84,6 +86,7 @@ export default function ProfileScreen() {
   const navigation = useNavigation();
   const theme = useTheme();
   const [balance] = useState(INITIAL_BALANCE);
+  const { setUser, setRole } = useAuth();
 
   // Calculate statistics
   const completedChores = chores.filter((c) => c.status === 'COMPLETED').length;
@@ -103,12 +106,10 @@ export default function ProfileScreen() {
         {
           text: 'Logout',
           style: 'destructive',
-          onPress: () => {
-            // TODO: Implement logout logic
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Home' }],
-            });
+          onPress: async () => {
+            await deleteToken();
+            setRole(null);
+            setUser(null);
           },
         },
       ],
