@@ -58,12 +58,14 @@ const BottomNav = () => {
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image
-              source={require('../../../assets/logo.png')}
+              source={require('../../../assets/pennywise-logo.png')}
               animation="bouncy"
-              scale={focused ? 1.4 : 1}
+              // scale={focused ? 1.4 : 1}
+              scale={1.5}
               opacity={focused ? 1 : 0.7}
               width={size - 10}
               height={size}
+              tintColor={focused ? theme.color11.val : theme.color7.val}
             />
           ),
         }}

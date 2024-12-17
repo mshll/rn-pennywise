@@ -30,6 +30,7 @@ const CustomHeader = ({ navigation, route, options, back }) => {
   const insets = useSafeAreaInsets();
   const title = options?.title ?? route?.name;
   const scrollY = options.scrollY || new Animated.Value(0);
+  const isProfileScreen = route.name === 'ProfileScreen';
 
   const titleOpacity = scrollY.interpolate({
     inputRange: [0, SCROLL_THRESHOLD],
@@ -60,10 +61,14 @@ const CustomHeader = ({ navigation, route, options, back }) => {
       <YStack backgroundColor={theme.color5.val}>
         <XStack height={HEADER_HEIGHT} ai="center" jc="space-between" px="$3">
           <XStack ai="center" gap="$3" f={1}>
-            <Avatar circular size="$4" borderWidth={'$1'} borderColor={theme.color6.val}>
-              <Avatar.Image source={{ uri: 'https://placecats.com/200/200' }} objectFit="cover" />
-              <Avatar.Fallback backgroundColor="$color6" />
-            </Avatar>
+            {isProfileScreen ? (
+              <Image source={require('../../../assets/pennywise-logo.png')} width={40} height={40} resizeMode="contain" tintColor={theme.color.val} />
+            ) : (
+              <Avatar circular size="$4" borderWidth={'$1'} borderColor={theme.color6.val}>
+                <Avatar.Image source={{ uri: 'https://placecats.com/200/200' }} />
+                <Avatar.Fallback backgroundColor="$color6" />
+              </Avatar>
+            )}
             <Animated.Text
               style={{
                 opacity: smallTitleOpacity,
