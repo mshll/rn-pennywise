@@ -153,7 +153,7 @@ export default function ProfileScreen() {
       {/* Profile Header */}
       <YStack ai="center" gap="$4">
         <Avatar circular size="$12" borderWidth={4} borderColor="$color6">
-          <Avatar.Image source={{ uri: 'https://placekitten.com/200/200' }} />
+          <Avatar.Image source={{ uri: 'https://placecats.com/200/200' }} />
           <Avatar.Fallback backgroundColor="$color6" />
         </Avatar>
         <YStack ai="center" gap="$1">

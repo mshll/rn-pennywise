@@ -9,11 +9,19 @@ export const QUIZ_LEVELS = {
 export const THEMES = ['red', 'blue', 'green', 'yellow', 'orange', 'pink', 'purple'];
 
 export const ROUTE_THEMES = {
+  // Child
   Home: 'red',
-  Chores: 'green',
   Quizzes: 'blue',
+  Chores: 'green',
   Store: 'purple',
   Profile: 'pink',
+
+  // Parent
+  ParentHome: 'red',
+  ParentQuizzes: 'blue',
+  ParentChores: 'green',
+  ParentStore: 'purple',
+  ParentProfile: 'pink',
 };
 
 export const INITIAL_BALANCE = 80;

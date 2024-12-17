@@ -65,7 +65,7 @@ const CustomHeader = ({ navigation, route, options, back }) => {
               <Image source={require('../../../assets/pennywise-logo.png')} width={40} height={40} resizeMode="contain" tintColor={theme.color.val} />
             ) : (
               <Avatar circular size="$4" borderWidth={'$1'} borderColor={theme.color6.val}>
-                <Avatar.Image source={{ uri: 'https://placecats.com/200/200' }} />
+                <Avatar.Image source={{ uri: 'https://placecatss.com/200/200' }} />
                 <Avatar.Fallback backgroundColor="$color6" />
               </Avatar>
             )}
