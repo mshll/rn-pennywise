@@ -26,11 +26,9 @@ const ScreenWrapper = ({ children, containerProps = {}, scrollViewProps = {} }) 
       showsVerticalScrollIndicator={false}
       {...scrollViewProps}
     >
-      {/* <YStack f={1} backgroundColor="$color2"> */}
       <YStack f={1} gap="$4" px="$4" pb="$6" {...containerProps}>
         {children}
       </YStack>
-      {/* </YStack> */}
     </Animated.ScrollView>
   );
 };
