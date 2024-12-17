@@ -4,6 +4,8 @@ import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
+import { deleteToken } from '../../api/storage';
+import { useAuth } from '../../context/AuthContext';
 
 // Dummy parent data
 const dummyParent = {
@@ -54,6 +56,7 @@ const ParentProfileScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
   const [parent] = useState(dummyParent);
+  const { setUser, setRole } = useAuth();
 
   const handleLogout = () => {
     Alert.alert(
@@ -67,12 +70,10 @@ const ParentProfileScreen = () => {
         {
           text: 'Logout',
           style: 'destructive',
-          onPress: () => {
-            // TODO: Implement logout logic
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Home' }],
-            });
+          onPress: async () => {
+            await deleteToken();
+            setRole(null);
+            setUser(null);
           },
         },
       ],
