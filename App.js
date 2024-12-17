@@ -1,10 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import { TamaguiProvider, XStack, YStack, Text, Theme, View } from 'tamagui';
-import tamaguiConfig from './tamagui.config';
-import BottomNavigation from './src/navigation/BottomNavigation/BottomNavigation';
-import { NavigationContainer } from '@react-navigation/native';
-import { useFonts, Fredoka_300Light, Fredoka_400Regular, Fredoka_500Medium, Fredoka_600SemiBold, Fredoka_700Bold } from '@expo-google-fonts/dev';
+import React, { useState, useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { TamaguiProvider, Theme } from "tamagui";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { StatusBar } from "expo-status-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import tamaguiConfig from "./tamagui.config";
+import AuthNavigation from "./src/navigation/AuthNavigation.js/AuthNavigation";
+import BottomNavigation from "./src/navigation/BottomNavigation/BottomNavigation";
+
+// Font Imports
 import {
+  useFonts,
+  Fredoka_300Light,
+  Fredoka_400Regular,
+  Fredoka_500Medium,
+  Fredoka_600SemiBold,
+  Fredoka_700Bold,
   Poppins_100Thin,
   Poppins_200ExtraLight,
   Poppins_300Light,
@@ -14,8 +26,6 @@ import {
   Poppins_700Bold,
   Poppins_800ExtraBold,
   Poppins_900Black,
-} from '@expo-google-fonts/dev';
-import {
   Rubik_300Light,
   Rubik_400Regular,
   Rubik_500Medium,
@@ -23,16 +33,21 @@ import {
   Rubik_700Bold,
   Rubik_800ExtraBold,
   Rubik_900Black,
-} from '@expo-google-fonts/dev';
+} from "@expo-google-fonts/dev";
+
+// Create QueryClient
+const queryClient = new QueryClient();
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Font Loading Logic
   const [fontsLoaded] = useFonts({
     Fredoka_300Light,
     Fredoka_400Regular,
     Fredoka_500Medium,
     Fredoka_600SemiBold,
     Fredoka_700Bold,
-    // ---
     Poppins_100Thin,
     Poppins_200ExtraLight,
     Poppins_300Light,
@@ -42,7 +57,6 @@ export default function App() {
     Poppins_700Bold,
     Poppins_800ExtraBold,
     Poppins_900Black,
-    // ---
     Rubik_300Light,
     Rubik_400Regular,
     Rubik_500Medium,
@@ -52,20 +66,34 @@ export default function App() {
     Rubik_900Black,
   });
 
+  // Check Login State
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        setIsLoggedIn(!!token); // True if token exists
+      } catch (error) {
+        console.error("Error checking auth status:", error);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
   if (!fontsLoaded) {
-    return null;
+    return null; // Replace with a Splash Screen later
   }
 
   return (
-    <TamaguiProvider config={tamaguiConfig}>
-      <Theme name="light">
-        {/* <Theme name="purple"> */}
-        <NavigationContainer>
-          <BottomNavigation />
-        </NavigationContainer>
-        <StatusBar style="auto" />
-        {/* </Theme> */}
-      </Theme>
-    </TamaguiProvider>
+    <QueryClientProvider client={queryClient}>
+      <TamaguiProvider config={tamaguiConfig}>
+        <Theme name="light">
+          <NavigationContainer>
+            {isLoggedIn ? <BottomNavigation /> : <AuthNavigation />}
+          </NavigationContainer>
+          <StatusBar style="auto" />
+        </Theme>
+      </TamaguiProvider>
+    </QueryClientProvider>
   );
 }

@@ -1,34 +1,19 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from '../../screens/Login';
-import Signup from '../../screens/Signup';
-import Welcome from '../../screens/Welcome';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import WelcomeScreen from "../../screens/auth/WelcomeScreen";
+import ParentSignupScreen from "../../screens/authParents/ParentSignupScreen";
+import ParentLoginScreen from "../../screens/authParents/ParentLoginScreen";
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
-const fadeAnimation = {
-  animation: 'timing',
-  config: {
-    duration: 100,
-  },
-};
-
-const screenOptions = {
-  headerShown: false,
-  animationTypeForReplace: 'pop',
-  animation: 'fade',
-  contentStyle: { backgroundColor: '#1b1d21' },
-  transitionSpec: {
-    open: fadeAnimation,
-    close: fadeAnimation,
-  },
-};
-
-export default function AuthNavigation() {
+const AuthNavigation = () => {
   return (
-    <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="Welcome" component={Welcome} />
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Signup" component={Signup} />
+    <Stack.Navigator initialRouteName="Welcome">
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="ParentSignup" component={ParentSignupScreen} />
+      <Stack.Screen name="ParentLogin" component={ParentLoginScreen} />
     </Stack.Navigator>
   );
-}
+};
+
+export default AuthNavigation;
