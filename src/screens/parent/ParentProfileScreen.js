@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import ParentScreenWrapper from '../../components/ParentScreenWrapper';
+import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 
 // Dummy parent data
 const dummyParent = {

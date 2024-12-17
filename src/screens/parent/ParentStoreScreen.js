@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { THEMES } from '../../data/constants';
 import { CoinAmount } from '../../utils/components';
-import ParentScreenWrapper from '../../components/ParentScreenWrapper';
+import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 
 // Dummy data for children and their store items
 const dummyData = [

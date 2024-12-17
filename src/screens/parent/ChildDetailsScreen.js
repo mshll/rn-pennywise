@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { THEMES } from '../../data/constants';
 import { CoinAmount } from '../../utils/components';
-import ParentScreenWrapper from '../../components/ParentScreenWrapper';
-import TaskCard from '../../components/TaskCard';
+import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
+import TaskCard from '../../components/parent/TaskCard';
 
 // Dummy data for child details
 const dummyChild = {

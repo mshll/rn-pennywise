@@ -4,16 +4,16 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { THEMES } from '../../data/constants';
 import { CoinAmount } from '../../utils/components';
-import ParentScreenWrapper from '../../components/ParentScreenWrapper';
-import TaskCard from '../../components/TaskCard';
+import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
+import TaskCard from '../../components/parent/TaskCard';
 
-// Dummy data for tasks
-const dummyTasks = [
+// Dummy data for chores
+const dummyChores = [
   {
     childId: 1,
     childName: 'Sarah Smith',
     childAvatar: 'https://placecats.com/200/200',
-    tasks: [
+    chores: [
       {
         id: 1,
         title: 'Clean Room',
@@ -36,7 +36,7 @@ const dummyTasks = [
     childId: 2,
     childName: 'John Smith Jr.',
     childAvatar: 'https://placecats.com/201/201',
-    tasks: [
+    chores: [
       {
         id: 3,
         title: 'Feed the Dog',
@@ -57,12 +57,12 @@ const dummyTasks = [
   },
 ];
 
-const ChildTasksSection = ({ child }) => {
+const ChildChoresSection = ({ child }) => {
   const theme = useTheme();
   const navigation = useNavigation();
-  const completedTasks = child.tasks.filter((task) => task.status === 'COMPLETED').length;
-  const totalTasks = child.tasks.length;
-  const progress = Math.round((completedTasks / totalTasks) * 100);
+  const completedChores = child.chores.filter((chore) => chore.status === 'COMPLETED').length;
+  const totalChores = child.chores.length;
+  const progress = Math.round((completedChores / totalChores) * 100);
 
   return (
     <YStack gap="$3">
@@ -76,7 +76,7 @@ const ChildTasksSection = ({ child }) => {
               {child.childName}
             </Text>
             <Text fontSize="$3" color="$color11">
-              {completedTasks}/{totalTasks} Tasks Done
+              {completedChores}/{totalChores} Tasks Done
             </Text>
           </YStack>
         </XStack>
@@ -97,8 +97,8 @@ const ChildTasksSection = ({ child }) => {
       </Progress>
 
       <YStack gap="$2">
-        {child.tasks.map((task, index) => (
-          <TaskCard key={task.id} task={task} theme={THEMES[index % THEMES.length]} />
+        {child.chores.map((chore, index) => (
+          <TaskCard key={chore.id} task={chore} theme={THEMES[index % THEMES.length]} />
         ))}
       </YStack>
     </YStack>
@@ -108,7 +108,7 @@ const ChildTasksSection = ({ child }) => {
 const ParentTasksScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
-  const [data] = useState(dummyTasks);
+  const [data] = useState(dummyChores);
 
   return (
     <ParentScreenWrapper containerProps={{ gap: '$6' }}>
@@ -122,7 +122,7 @@ const ParentTasksScreen = () => {
       </YStack>
 
       {data.map((child) => (
-        <ChildTasksSection key={child.childId} child={child} />
+        <ChildChoresSection key={child.childId} child={child} />
       ))}
 
       {data.length === 0 && (
