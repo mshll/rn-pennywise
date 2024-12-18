@@ -80,10 +80,6 @@ const ChoresScreen = () => {
           <Text fontSize="$4" color="$color11" ta="center">
             No tasks assigned yet!
           </Text>
-          {/* Debug: Show the raw data */}
-          <Text fontSize="$2" color="$color11" ta="center">
-            Raw data: {JSON.stringify(chores)}
-          </Text>
         </YStack>
       )}
     </ScreenWrapper>

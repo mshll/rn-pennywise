@@ -111,7 +111,7 @@ const CCard = ({ item, onPurchase, balance }) => {
               </XStack>
               <XStack jc="space-between" ai="center">
                 <Text fontSize="$3" fontWeight="600">
-                  Coins Left
+                  Money Left
                 </Text>
                 <CoinAmount amount={remainingBalance} clr={remainingBalance >= 0 ? '$color12' : '$color10'} />
               </XStack>
@@ -139,7 +139,7 @@ const CCard = ({ item, onPurchase, balance }) => {
                 Almost there! 🎯
               </Text>
               <Text fontSize="$3" color="$color11">
-                You need {remainingAmount} KD more to buy the {item.name}. Keep doing your chores and quizzes to earn more coins!
+                You need {remainingAmount} KD more to buy the {item.name}. Keep doing your chores and quizzes to earn more money!
               </Text>
             </YStack>
             <YStack gap="$3" w="100%" mb="$6">

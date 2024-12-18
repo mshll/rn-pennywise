@@ -19,6 +19,7 @@ export const addChild = async (childData) => {
 
 // Add chore to child
 export const addChore = async (childId, choreData) => {
+  console.log('CHORE-DATA', choreData);
   const response = await instance.post(`/chores/${childId}`, choreData);
   return response.data;
 };

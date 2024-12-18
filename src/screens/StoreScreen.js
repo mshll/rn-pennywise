@@ -65,7 +65,7 @@ const StoreScreen = () => {
 
   return (
     <ScreenWrapper>
-      {renderSection('Ready to Buy! 🎉', readyToBuyItems.length > 0 ? "You've saved enough coins for these awesome rewards!" : null, readyToBuyItems)}
+      {renderSection('Ready to Buy! 🎉', readyToBuyItems.length > 0 ? "You've saved enough money for these awesome rewards!" : null, readyToBuyItems)}
 
       {renderSection('Keep Saving! 🎯', keepSavingItems.length > 0 ? 'Almost there! Keep doing your tasks to earn these.' : null, keepSavingItems)}
 

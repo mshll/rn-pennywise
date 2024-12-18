@@ -47,10 +47,10 @@ export const ToastProvider = ({ children }) => {
             ],
           }}
         >
-          <XStack backgroundColor={toast.type === 'error' ? '$red10' : '$green10'} p="$3" br="$4" ai="center" jc="space-between" elevation={2}>
-            <XStack ai="center" gap="$2">
-              <Icon name={toast.type === 'error' ? 'circle-exclamation' : 'circle-check'} size={18} color="white" />
-              <Text color="white" fontSize="$4">
+          <XStack backgroundColor={toast.type === 'error' ? '$red10' : '$green10'} p="$3" br="$4" ai="flex-start" jc="space-between" elevation={2}>
+            <XStack f={1} ai="flex-start" gap="$2">
+              <Icon name={toast.type === 'error' ? 'circle-exclamation' : 'circle-check'} size={18} color="white" style={{ marginTop: 3 }} />
+              <Text color="white" fontSize="$4" flexWrap="wrap" flex={1}>
                 {toast.message}
               </Text>
             </XStack>

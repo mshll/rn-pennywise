@@ -23,11 +23,11 @@ const ChildCard = ({ child, onPress, theme: cardTheme, showProgress = true }) =>
             <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
               {child.username}
             </Text>
-            <XStack ai="center" gap="$4">
+            <XStack ai="center" gap="$4" jc="space-between">
               <CoinAmount amount={child.balance} size="$3" />
               {showProgress && (
                 <XStack ai="center" gap="$1">
-                  <Icon name="list-check" size={12} color={theme.color11.val} />
+                  {/* <Icon name="list-check" size={12} color={theme.color11.val} /> */}
                   <Text fontSize="$3" color="$color11">
                     {isLoading ? 'Loading...' : `${completedChores}/${totalChores} Tasks`}
                   </Text>

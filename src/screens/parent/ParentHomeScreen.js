@@ -1,21 +1,43 @@
-import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button } from 'tamagui';
+import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button, Input, Sheet } from 'tamagui';
+import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { THEMES } from '../../data/constants';
 import { CoinAmount } from '../../utils/components';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
-import { useParentProfile } from '../../hooks/useParent';
+import { useParentProfile, useParentBalance, useUpdateParentBalance } from '../../hooks/useParent';
+import { useToast } from '../../components/Toast';
 import ChildCard from '../../components/parent/ChildCard';
 
-const QuickStatsCard = ({ icon, title, value, theme: cardTheme }) => {
+const QuickStatsCard = ({ icon, title, value, theme: cardTheme, onPress, fullWidth }) => {
   const theme = useTheme();
   return (
     <Theme name={cardTheme}>
-      <Card f={1} bg="$color6" br="$6" p="$3" bc="$color4" borderBottomWidth={4}>
+      <Card
+        f={fullWidth ? undefined : 1}
+        w={fullWidth ? '100%' : undefined}
+        bg="$color6"
+        br="$6"
+        p="$3"
+        bc="$color4"
+        borderBottomWidth={4}
+        pressStyle={onPress ? { scale: 0.97 } : undefined}
+        onPress={onPress}
+      >
         <YStack gap="$2">
-          <Circle size="$3" bg="$color3">
-            <Icon name={icon} size={14} color={theme.color.val} />
-          </Circle>
+          <XStack jc="space-between" ai="center">
+            <Circle size="$3" bg="$color3">
+              <Icon name={icon} size={14} color={theme.color.val} />
+            </Circle>
+            {onPress && (
+              <XStack ai="center" gap="$1">
+                <Icon name="plus" size={12} color={theme.blue11.val} />
+                <Text fontSize="$2" color="$color11" ml="$1">
+                  Tap to deposit
+                </Text>
+              </XStack>
+            )}
+          </XStack>
           <Text fontSize="$2" color="$color11">
             {title}
           </Text>
@@ -32,10 +54,34 @@ const ParentHomeScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
   const { data: parentProfile, isLoading, error } = useParentProfile();
+  const { data: parentBalance = 0 } = useParentBalance(parentProfile?.username);
+  const { mutate: updateBalance } = useUpdateParentBalance();
+  const { showToast } = useToast();
 
-  // Calculate total stats
+  const [showDepositSheet, setShowDepositSheet] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
+
   const totalBalance = parentProfile?.children?.reduce((sum, child) => sum + child.balance, 0) || 0;
   const totalChildren = parentProfile?.children?.length || 0;
+
+  const handleDeposit = () => {
+    const amount = parseFloat(depositAmount);
+    if (isNaN(amount) || amount <= 0) {
+      showToast('Please enter a valid amount', 'error');
+      return;
+    }
+
+    updateBalance(
+      { username: parentProfile.username, amount },
+      {
+        onSuccess: () => {
+          showToast(`Successfully deposited ${amount} KD`, 'success');
+          setShowDepositSheet(false);
+          setDepositAmount('');
+        },
+      }
+    );
+  };
 
   if (isLoading) {
     return (
@@ -72,10 +118,20 @@ const ParentHomeScreen = () => {
         <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
           Overview
         </Text>
-        <XStack gap="$3">
-          <QuickStatsCard icon="piggy-bank" title="Total Balance" value={<CoinAmount amount={totalBalance} />} theme="pink" />
-          <QuickStatsCard icon="users" title="Children" value={totalChildren} theme="green" />
-        </XStack>
+        <YStack gap="$3">
+          <QuickStatsCard
+            icon="wallet"
+            title="Your Balance"
+            value={<CoinAmount amount={parentBalance} />}
+            theme="blue"
+            onPress={() => setShowDepositSheet(true)}
+            fullWidth
+          />
+          <XStack gap="$3">
+            <QuickStatsCard icon="piggy-bank" title="Children's Balance" value={<CoinAmount amount={totalBalance} />} theme="pink" />
+            <QuickStatsCard icon="users" title="Children" value={totalChildren} theme="green" />
+          </XStack>
+        </YStack>
       </YStack>
 
       <YStack gap="$3">
@@ -130,6 +186,34 @@ const ParentHomeScreen = () => {
           </Theme>
         </YStack>
       )}
+
+      <Sheet modal open={showDepositSheet} onOpenChange={setShowDepositSheet} snapPointsMode="fit" dismissOnSnapToBottom>
+        <Sheet.Overlay />
+        <Sheet.Frame padding="$4" pb="$8">
+          <Sheet.Handle />
+          <YStack gap="$4">
+            <Text fontSize="$6" fontWeight="600" ta="center">
+              Deposit Funds
+            </Text>
+            <Input
+              size="$4"
+              placeholder="Amount"
+              value={depositAmount}
+              onChangeText={setDepositAmount}
+              keyboardType="numeric"
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
+              backgroundColor="$color4"
+            />
+            <Theme name="green">
+              <Button size="$4" bg="$color4" onPress={handleDeposit} disabled={!depositAmount || parseFloat(depositAmount) <= 0}>
+                <Text>Deposit</Text>
+              </Button>
+            </Theme>
+          </YStack>
+        </Sheet.Frame>
+      </Sheet>
     </ParentScreenWrapper>
   );
 };
