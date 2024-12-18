@@ -1,4 +1,4 @@
-import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button, Avatar } from 'tamagui';
+import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button, Avatar, ScrollView } from 'tamagui';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
@@ -103,34 +103,36 @@ const ParentProfileScreen = () => {
         <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
           Children
         </Text>
-        <XStack gap="$3" flexWrap="wrap">
-          {parentProfile.children?.map((child) => (
-            <Circle
-              bw="$1.5"
-              bc="$color6"
-              key={child.id}
-              pressStyle={{ scale: 0.95 }}
-              animation="bouncy"
-              onPress={() => navigation.navigate('ChildDetailsScreen', { childId: child.id })}
-            >
-              <Avatar circular size="$8">
-                <Avatar.Image source={AVATARS[child.avatarUrl] || AVATARS.DEFAULT} />
-                <Avatar.Fallback backgroundColor="$color6" />
-              </Avatar>
-            </Circle>
-          ))}
-          <Theme name="pink">
-            <Button
-              bw="$1"
-              bc="$color6"
-              size="$8"
-              circular
-              bg="$color4"
-              icon={<Icon name="plus" size={24} color={theme.color.val} />}
-              onPress={() => navigation.navigate('AddChildScreen')}
-            />
-          </Theme>
-        </XStack>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <XStack gap="$3">
+            {parentProfile.children?.map((child) => (
+              <Circle
+                bw="$1.5"
+                bc="$color6"
+                key={child.id}
+                pressStyle={{ scale: 0.95 }}
+                animation="bouncy"
+                onPress={() => navigation.navigate('ChildDetailsScreen', { childId: child.id })}
+              >
+                <Avatar circular size="$8">
+                  <Avatar.Image source={AVATARS[child.avatarUrl] || AVATARS.DEFAULT} />
+                  <Avatar.Fallback backgroundColor="$color6" />
+                </Avatar>
+              </Circle>
+            ))}
+            <Theme name="pink">
+              <Button
+                bw="$1"
+                bc="$color6"
+                size="$8"
+                circular
+                bg="$color4"
+                icon={<Icon name="plus" size={24} color={theme.color.val} />}
+                onPress={() => navigation.navigate('AddChildScreen')}
+              />
+            </Theme>
+          </XStack>
+        </ScrollView>
       </YStack>
 
       <YStack gap="$3">

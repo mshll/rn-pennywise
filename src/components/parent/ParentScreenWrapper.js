@@ -6,7 +6,7 @@ const ParentScreenWrapper = ({ children, containerProps = {}, scrollViewProps = 
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: theme.color2.val }} showsVerticalScrollIndicator={false} {...scrollViewProps}>
-      <YStack f={1} gap="$4" px="$4" pb="$6" {...containerProps}>
+      <YStack f={1} gap="$4" px="$4" py="$6" {...containerProps}>
         {children}
       </YStack>
     </ScrollView>

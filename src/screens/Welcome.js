@@ -9,12 +9,12 @@ const Welcome = () => {
   const insets = useSafeAreaInsets();
 
   return (
-    <Theme name="pink">
+    <Theme name="red">
       <YStack f={1} backgroundColor="$color2" pt={insets.top} px="$4">
         <YStack f={1} ai="center" jc="center" gap="$8">
           {/* Logo */}
           <YStack ai="center" gap="$4">
-            <Image source={require('../../assets/pennywise-logo.png')} width={120} height={120} resizeMode="contain" tintColor={theme.color.val} />
+            <Image source={require('../../assets/pennywise-logo.png')} width={120} height={120} resizeMode="contain" tintColor={theme.red11.val} />
             <YStack ai="center" gap="$2">
               <Text fontSize="$8" fontWeight="600" fontFamily="$heading" ta="center">
                 Welcome to PennyWise
@@ -57,7 +57,7 @@ const Welcome = () => {
           <YStack gap="$4" w="100%" mt="$8">
             <Theme name="blue">
               <Button size="$6" bg="$color4" pressStyle={{ scale: 0.95 }} animation="bouncy" onPress={() => navigation.navigate('Login')}>
-                <Text fontSize="$5" fontFamily="$body">
+                <Text fontSize="$4" fontWeight="600" fontFamily="$body">
                   Sign In
                 </Text>
               </Button>
@@ -65,7 +65,7 @@ const Welcome = () => {
 
             <Theme name="green">
               <Button size="$6" bg="$color4" pressStyle={{ scale: 0.95 }} animation="bouncy" onPress={() => navigation.navigate('Signup')}>
-                <Text fontSize="$5" fontFamily="$body">
+                <Text fontSize="$4" fontWeight="600" fontFamily="$body">
                   Create Parent Account
                 </Text>
               </Button>

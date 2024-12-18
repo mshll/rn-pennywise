@@ -3,13 +3,12 @@ import { Animated } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { QUIZ_LEVELS, INITIAL_BALANCE, THEMES } from '../data/constants';
+import { QUIZ_LEVELS, THEMES } from '../data/constants';
 import { quizzes } from '../data/quizzes';
-import { chores } from '../data/chores';
-import { storeItems } from '../data/storeItems';
 import { moneyTips } from '../data/tips';
 import { CoinAmount } from '../utils/components';
 import ScreenWrapper from '../components/ScreenWrapper';
+import { useChildProfile, useChildChores, useChildStoreItems } from '../hooks/useChild';
 
 const HEADER_HEIGHT = 60;
 const LARGE_TITLE_HEIGHT = 60;
@@ -91,10 +90,13 @@ const TipCard = ({ tip, progress }) => {
 const HomeScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
-  const [balance] = useState(INITIAL_BALANCE);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const [tipProgress, setTipProgress] = useState(100);
   const progressInterval = useRef(null);
+
+  const { data: profile, isLoading: isLoadingProfile } = useChildProfile();
+  const { data: chores, isLoading: isLoadingChores } = useChildChores();
+  const { data: storeItems, isLoading: isLoadingStore } = useChildStoreItems();
 
   // Handle tip rotation and progress
   useEffect(() => {
@@ -131,10 +133,19 @@ const HomeScreen = () => {
     setTipProgress(100);
   };
 
-  const activeChores = chores.filter((c) => c.status === 'INCOMPLETE').length;
-  const completedChores = chores.filter((c) => c.status === 'COMPLETED').length;
+  if (isLoadingProfile || isLoadingChores || isLoadingStore) {
+    return (
+      <YStack f={1} ai="center" jc="center" backgroundColor="$color2">
+        <Text>Loading...</Text>
+      </YStack>
+    );
+  }
+
+  const activeChores = chores?.filter((c) => c.status === 'INCOMPLETE')?.length || 0;
+  const completedChores = chores?.filter((c) => c.status === 'COMPLETED')?.length || 0;
+  const totalChores = chores?.length || 0;
   const totalQuizzes = quizzes.length;
-  const affordableItems = storeItems.filter((item) => balance >= item.price).length;
+  const affordableItems = storeItems?.filter((item) => profile?.balance >= item.price && !item.purchasedAt)?.length || 0;
 
   return (
     <ScreenWrapper containerProps={{ gap: '$6' }}>
@@ -152,9 +163,21 @@ const HomeScreen = () => {
           Overview
         </Text>
         <XStack gap="$3">
-          <QuickStatsCard icon="piggy-bank" title="My Balance" value={<CoinAmount amount={balance} />} theme="pink" />
-          <QuickStatsCard icon="list-check" title="Tasks Done" value={`${completedChores}/${chores.length}`} theme="green" />
+          <QuickStatsCard icon="piggy-bank" title="My Balance" value={<CoinAmount amount={profile?.balance || 0} />} theme="pink" />
+          <QuickStatsCard icon="list-check" title="Tasks Done" value={`${completedChores}/${totalChores}`} theme="green" />
         </XStack>
+      </YStack>
+
+      <YStack gap="$3">
+        <XStack jc="space-between" ai="center">
+          <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
+            Money Tip
+          </Text>
+          <Theme name="orange">
+            <Button size="$3" bg="$color4" circular icon={<Icon name="arrow-right" size={12} color={theme.color.val} />} onPress={handleNextTip} />
+          </Theme>
+        </XStack>
+        <TipCard tip={moneyTips[currentTipIndex]} progress={tipProgress} />
       </YStack>
 
       <YStack gap="$3">
@@ -185,18 +208,6 @@ const HomeScreen = () => {
           theme="purple"
           onPress={() => navigation.navigate('Store')}
         />
-      </YStack>
-
-      <YStack gap="$3">
-        <XStack jc="space-between" ai="center">
-          <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
-            Money Tip
-          </Text>
-          <Theme name="orange">
-            <Button size="$3" bg="$color4" circular icon={<Icon name="arrow-right" size={12} color={theme.color.val} />} onPress={handleNextTip} />
-          </Theme>
-        </XStack>
-        <TipCard tip={moneyTips[currentTipIndex]} progress={tipProgress} />
       </YStack>
     </ScreenWrapper>
   );

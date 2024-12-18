@@ -138,7 +138,7 @@ const Login = () => {
             >
               <XStack gap="$2" ai="center">
                 {isLoading && <Icon name="circle-notch" size={20} color={theme.color.val} style={{ transform: [{ rotate: '360deg' }] }} />}
-                <Text fontSize="$5" fontFamily="$body">
+                <Text fontSize="$4" fontWeight="600" fontFamily="$body">
                   {isLoading ? 'Signing in...' : 'Sign In'}
                 </Text>
               </XStack>

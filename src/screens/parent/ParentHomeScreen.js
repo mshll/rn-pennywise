@@ -1,11 +1,11 @@
-import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button, Image, Progress } from 'tamagui';
+import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { THEMES } from '../../data/constants';
 import { CoinAmount } from '../../utils/components';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 import { useParentProfile } from '../../hooks/useParent';
-import { AVATARS } from '../../data/avatars';
+import ChildCard from '../../components/parent/ChildCard';
 
 const QuickStatsCard = ({ icon, title, value, theme: cardTheme }) => {
   const theme = useTheme();
@@ -23,30 +23,6 @@ const QuickStatsCard = ({ icon, title, value, theme: cardTheme }) => {
             {value}
           </Text>
         </YStack>
-      </Card>
-    </Theme>
-  );
-};
-
-const ChildCard = ({ child, onPress, theme: cardTheme }) => {
-  const theme = useTheme();
-
-  return (
-    <Theme name={cardTheme}>
-      <Card bg="$color6" br="$6" p="$4" bc="$color4" borderBottomWidth={4} pressStyle={{ scale: 0.95 }} animation="bouncy" onPress={onPress}>
-        <XStack gap="$3" ai="center">
-          <Circle size="$6" bg="$color3">
-            <Image source={AVATARS[child.avatarUrl] || AVATARS.DEFAULT} width={48} height={48} borderRadius={24} />
-          </Circle>
-          <YStack f={1} gap="$2">
-            <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
-              {child.username}
-            </Text>
-            <XStack ai="center" gap="$4">
-              <CoinAmount amount={child.balance} size="$3" />
-            </XStack>
-          </YStack>
-        </XStack>
       </Card>
     </Theme>
   );

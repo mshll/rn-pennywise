@@ -5,6 +5,7 @@ import { THEMES } from '../../data/constants';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 import TaskCard from '../../components/parent/TaskCard';
 import { useParentProfile, useChildChores } from '../../hooks/useParent';
+import { AVATARS } from '../../data/avatars';
 
 const ChildChoresSection = ({ child }) => {
   const theme = useTheme();
@@ -15,8 +16,8 @@ const ChildChoresSection = ({ child }) => {
     <YStack gap="$3">
       <XStack jc="space-between" ai="center">
         <XStack gap="$2" ai="center">
-          <Circle size="$6" bg="$color4">
-            <Image source={require('../../../assets/avatars/avatar1.png')} width={48} height={48} borderRadius={24} />
+          <Circle bw="$1.5" bc="$color3">
+            <Image source={AVATARS[child.avatarUrl] || AVATARS.DEFAULT} width="$6" height="$6" borderRadius={24} />
           </Circle>
           <YStack>
             <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
