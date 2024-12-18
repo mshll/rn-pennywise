@@ -9,47 +9,44 @@ import { CoinAmount } from '../../utils/components';
 import { useToast } from '../../components/Toast';
 
 const icons = [
+  'list-check',
   'broom',
-  'book',
-  'utensils',
-  'shirt',
-  'paw',
-  'seedling',
-  'bed',
-  'bath',
-  'tooth',
-  'trash',
-  'plate-wheat',
-  'socks',
-  'backpack',
-  'pen',
-  'pencil',
-  'paintbrush',
-  'basketball',
-  'bicycle',
-  'puzzle-piece',
-  'music',
-  'computer',
-  'gamepad',
-  'table',
-  'couch',
-  'window',
-  'door',
-  'car',
-  'fish',
-  'cat',
-  'dog',
-  'leaf',
-  'carrot',
-  'kitchen-set',
   'soap',
-  'toilet-paper',
-  'spray-can',
-  'vacuum-robot',
+  'bucket',
+  'trash',
+  'shirt',
+  'bed',
+  'kitchen-set',
+  'utensils',
+  'robot',
+  'sink',
+  'spray-can-sparkles',
+  'bath',
+  'toilet',
+  'book',
+  'pen',
+  'school',
+  'dog',
+  'cat',
+  'leaf',
+  'recycle',
+  'paintbrush',
+  'basket-shopping',
+  'car',
+  'bicycle',
 ];
 
 const IconButton = memo(({ iconName, isSelected, onPress, theme }) => (
-  <Button size="$5" circular backgroundColor={isSelected ? '$color4' : '$color6'} pressStyle={{ scale: 0.95 }} onPress={onPress} animation="quick">
+  <Button
+    size="$5"
+    circular
+    backgroundColor={isSelected ? '$color4' : '$color6'}
+    pressStyle={{ scale: 0.95 }}
+    onPress={onPress}
+    animation="quick"
+    borderWidth={isSelected ? 3 : 0}
+    borderColor="$color6"
+  >
     <Icon name={iconName} size={20} color={theme.color.val} />
   </Button>
 ));
@@ -68,7 +65,7 @@ const AddChoreScreen = ({ route }) => {
     title: '',
     description: '',
     rewardAmount: '',
-    icon: 'broom',
+    icon: 'list-check',
   });
 
   const handleSubmit = useCallback(() => {
