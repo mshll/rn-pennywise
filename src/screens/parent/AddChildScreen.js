@@ -3,14 +3,19 @@ import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAddChild } from '../../hooks/useParent';
+import { useAddChild, useParentProfile, useParentBalance } from '../../hooks/useParent';
 import { AVATARS } from '../../data/avatars';
+import { useToast } from '../../components/Toast';
+import { CoinAmount } from '../../utils/components';
 
 const AddChildScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { mutate: addChild, isLoading } = useAddChild();
+  const { data: parentProfile } = useParentProfile();
+  const { data: parentBalance = 0 } = useParentBalance(parentProfile?.username);
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     username: '',
@@ -25,19 +30,32 @@ const AddChildScreen = () => {
   const [childCredentials, setChildCredentials] = useState(null);
 
   const handleSubmit = () => {
+    const initialBalance = parseFloat(formData.initialBalance);
+    if (initialBalance > parentBalance) {
+      showToast('Insufficient balance for initial balance', 'error');
+      return;
+    }
+
     const childData = {
       ...formData,
-      initialBalance: parseFloat(formData.initialBalance),
+      initialBalance,
     };
-    addChild(childData, {
-      onSuccess: (response) => {
-        setChildCredentials({
-          username: response.username,
-          password: response.password || formData.password,
-        });
-        setSuccess(true);
+
+    addChild(
+      {
+        childData,
+        username: parentProfile?.username,
       },
-    });
+      {
+        onSuccess: (response) => {
+          setChildCredentials({
+            username: response.username,
+            password: response.password || formData.password,
+          });
+          setSuccess(true);
+        },
+      }
+    );
   };
 
   if (success && childCredentials) {
@@ -131,6 +149,9 @@ const AddChildScreen = () => {
             </Text>
             <Text fontSize="$4" color="$color11" ta="center">
               Enter your child's information
+            </Text>
+            <Text fontSize="$3" color="$color11" ta="center">
+              Your Balance: <CoinAmount amount={parentBalance} />
             </Text>
           </YStack>
 

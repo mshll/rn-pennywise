@@ -4,7 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FlatList } from 'react-native';
-import { useAddChore } from '../../hooks/useParent';
+import { useAddChore, useParentProfile, useParentBalance } from '../../hooks/useParent';
+import { CoinAmount } from '../../utils/components';
+import { useToast } from '../../components/Toast';
 
 const icons = [
   'broom',
@@ -58,6 +60,9 @@ const AddChoreScreen = ({ route }) => {
   const insets = useSafeAreaInsets();
   const { childId } = route.params;
   const { mutate: addChore, isLoading } = useAddChore();
+  const { data: parentProfile } = useParentProfile();
+  const { data: parentBalance = 0 } = useParentBalance(parentProfile?.username);
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -67,19 +72,37 @@ const AddChoreScreen = ({ route }) => {
   });
 
   const handleSubmit = useCallback(() => {
+    const rewardAmount = parseFloat(formData.rewardAmount);
+    if (rewardAmount > parentBalance) {
+      showToast('Insufficient balance for reward amount', 'error');
+      return;
+    }
+
+    if (!formData.title.trim()) {
+      showToast('Please enter a task title', 'error');
+      return;
+    }
+
     const choreData = {
-      ...formData,
-      rewardAmount: parseFloat(formData.rewardAmount),
+      title: formData.title.trim(),
+      description: formData.description.trim(),
+      rewardAmount,
+      icon: formData.icon,
     };
+
     addChore(
-      { childId, choreData },
+      {
+        childId,
+        choreData,
+        username: parentProfile?.username,
+      },
       {
         onSuccess: () => {
           navigation.goBack();
         },
       }
     );
-  }, [formData, childId, addChore, navigation]);
+  }, [formData, childId, addChore, navigation, parentProfile?.username, parentBalance]);
 
   const renderIcon = useCallback(
     ({ item }) => (
@@ -128,6 +151,12 @@ const AddChoreScreen = ({ route }) => {
             <Text fontSize="$4" color="$color11" ta="center">
               Create a new task for your child
             </Text>
+            <XStack jc="center" ai="center" gap="$3">
+              <Text fontSize="$3" color="$color11" ta="center">
+                Your Balance:
+              </Text>
+              <CoinAmount amount={parentBalance} />
+            </XStack>
           </YStack>
 
           <Form gap="$4" onSubmit={handleSubmit}>

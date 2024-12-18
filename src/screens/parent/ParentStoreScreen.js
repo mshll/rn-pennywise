@@ -12,16 +12,30 @@ const StoreItemCard = ({ item, theme: cardTheme }) => {
 
   return (
     <Theme name={cardTheme}>
-      <Card bg="$color6" br="$6" bc="$color4" borderBottomWidth={4} w={200} mr="$3" overflow="hidden">
+      <Card bg="$color6" br="$6" bc="$color4" borderBottomWidth={4} w={200} mr="$3" overflow="hidden" o={item.purchasedAt ? 0.7 : 1}>
         <Image source={{ uri: item.image }} width="100%" height={120} />
         <YStack p="$3" gap="$1">
-          <Text fontSize="$4" fontWeight="600" fontFamily="$heading" numberOfLines={1}>
-            {item.name}
-          </Text>
+          <XStack jc="space-between" ai="center">
+            <Text fontSize="$4" fontWeight="600" fontFamily="$heading" numberOfLines={1} f={1}>
+              {item.name}
+            </Text>
+            {item.purchasedAt && (
+              <Circle size="$3" bg="$color9">
+                <Icon name="check" size={12} color={theme.color.val} />
+              </Circle>
+            )}
+          </XStack>
           <Text fontSize="$2" color="$color11" numberOfLines={2}>
             {item.description}
           </Text>
-          <CoinAmount amount={item.price} size="$3" mt="$2" />
+          <XStack jc="space-between" ai="center" mt="$2">
+            <CoinAmount amount={item.price} size="$3" />
+            {item.purchasedAt && (
+              <Text fontSize="$2" color="$color11">
+                Purchased
+              </Text>
+            )}
+          </XStack>
         </YStack>
       </Card>
     </Theme>

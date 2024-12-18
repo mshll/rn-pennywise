@@ -66,7 +66,7 @@ export const useSubmitQuizAttempt = () => {
       queryClient.invalidateQueries(['quizAttempts']);
       queryClient.invalidateQueries(['childProfile']); // Refresh balance
       // if (data.correct) {
-      //   showToast(`Correct! You earned ${data.rewardAmount} coins! 🎉`);
+      //   showToast(`Correct! You earned ${data.rewardAmount} KD! 🎉`);
       // } else {
       //   showToast(`Incorrect. The correct answer was ${data.correctOption}. Try again!`, 'error');
       // }

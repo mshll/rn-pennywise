@@ -152,7 +152,7 @@ export default function ProfileScreen() {
     {
       icon: 'piggy-bank',
       title: 'Super Saver',
-      description: 'Save 100 coins',
+      description: 'Save 100 KD',
       progress: Math.round(Math.min((profile?.balance / 100) * 100, 100)),
       theme: 'orange',
     },
