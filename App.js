@@ -106,9 +106,9 @@ export default function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TamaguiProvider config={tamaguiConfig}>
-        <Theme name="light">
+    <TamaguiProvider config={tamaguiConfig}>
+      <Theme name="light">
+        <QueryClientProvider client={queryClient}>
           <ToastProvider>
             <AuthProvider>
               <NavigationContainer>
@@ -117,8 +117,8 @@ export default function App() {
             </AuthProvider>
           </ToastProvider>
           <StatusBar style="auto" />
-        </Theme>
-      </TamaguiProvider>
-    </QueryClientProvider>
+        </QueryClientProvider>
+      </Theme>
+    </TamaguiProvider>
   );
 }

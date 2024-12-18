@@ -14,10 +14,15 @@ export const login = async (username, password) => {
   return response.data;
 };
 
-export const register = async (email, username, password) => {
-  const response = await instance.post('/auth/signup', { email, username, password });
+export const register = async (email, username, password, avatarUrl) => {
+  const response = await instance.post('/auth/signup', { email, username, password, avatarUrl });
   if (response.data.token) {
     await setToken(response.data.token);
   }
+  return response.data;
+};
+
+export const getMe = async () => {
+  const response = await instance.get('/auth/me');
   return response.data;
 };
