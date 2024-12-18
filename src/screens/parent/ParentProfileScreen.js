@@ -1,33 +1,11 @@
 import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button, Avatar } from 'tamagui';
-import { useState } from 'react';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 import { deleteToken } from '../../api/storage';
 import { useAuth } from '../../context/AuthContext';
-
-// Dummy parent data
-const dummyParent = {
-  id: 1,
-  name: 'John Smith',
-  email: 'john@example.com',
-  avatar: 'https://placecats.com/202/202',
-  children: [
-    {
-      id: 1,
-      name: 'Sarah Smith',
-      balance: 80,
-      avatar: 'https://placecats.com/200/200',
-    },
-    {
-      id: 2,
-      name: 'John Smith Jr.',
-      balance: 120,
-      avatar: 'https://placecats.com/201/201',
-    },
-  ],
-};
+import { useParentProfile } from '../../hooks/useParent';
 
 const SettingCard = ({ icon, title, onPress, theme: cardTheme }) => {
   const theme = useTheme();
@@ -55,8 +33,8 @@ const SettingCard = ({ icon, title, onPress, theme: cardTheme }) => {
 const ParentProfileScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
-  const [parent] = useState(dummyParent);
   const { setUser, setRole } = useAuth();
+  const { data: parentProfile, isLoading, error } = useParentProfile();
 
   const handleLogout = () => {
     Alert.alert(
@@ -81,19 +59,39 @@ const ParentProfileScreen = () => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <ParentScreenWrapper>
+        <YStack f={1} ai="center" jc="center">
+          <Text>Loading...</Text>
+        </YStack>
+      </ParentScreenWrapper>
+    );
+  }
+
+  if (error) {
+    return (
+      <ParentScreenWrapper>
+        <YStack f={1} ai="center" jc="center">
+          <Text color="$red10">Error loading profile</Text>
+        </YStack>
+      </ParentScreenWrapper>
+    );
+  }
+
   return (
     <ParentScreenWrapper containerProps={{ gap: '$6' }}>
       <YStack ai="center" gap="$4">
         <Avatar circular size="$12" borderWidth={4} borderColor="$color6">
-          <Avatar.Image source={{ uri: parent.avatar }} />
+          <Avatar.Image source={require('../../../assets/avatars/avatar1.png')} />
           <Avatar.Fallback backgroundColor="$color6" />
         </Avatar>
         <YStack ai="center" gap="$1">
           <Text fontSize="$7" fontWeight="600" fontFamily="$heading">
-            {parent.name}
+            {parentProfile.username}
           </Text>
           <Text fontSize="$4" color="$color11">
-            {parent.email}
+            {parentProfile.email}
           </Text>
         </YStack>
       </YStack>
@@ -103,7 +101,7 @@ const ParentProfileScreen = () => {
           Children
         </Text>
         <XStack gap="$3" flexWrap="wrap">
-          {parent.children.map((child) => (
+          {parentProfile.children?.map((child) => (
             <Avatar
               key={child.id}
               circular
@@ -114,7 +112,7 @@ const ParentProfileScreen = () => {
               animation="bouncy"
               onPress={() => navigation.navigate('ChildDetailsScreen', { childId: child.id })}
             >
-              <Avatar.Image source={{ uri: child.avatar }} />
+              <Avatar.Image source={require('../../../assets/avatars/avatar1.png')} />
               <Avatar.Fallback backgroundColor="$color6" />
             </Avatar>
           ))}

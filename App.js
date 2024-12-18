@@ -102,7 +102,7 @@ export default function App() {
   });
 
   if (!fontsLoaded) {
-    return <LoadingScreen />;
+    return null;
   }
 
   return (
