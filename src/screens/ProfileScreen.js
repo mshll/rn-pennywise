@@ -3,14 +3,14 @@ import { useState, useRef, useLayoutEffect } from 'react';
 import { Animated, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { chores } from '../data/chores';
 import { quizzes } from '../data/quizzes';
-import { storeItems } from '../data/storeItems';
-import { INITIAL_BALANCE } from '../data/constants';
 import { CoinAmount } from '../utils/components';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { deleteToken } from '../api/storage';
 import { useAuth } from '../context/AuthContext';
+import { useChildProfile, useChildChores, useChildStoreItems } from '../hooks/useChild';
+import { AVATARS } from '../data/avatars';
+import { getRandomChildTitle } from '../data/constants';
 
 const StatCard = ({ icon, title, value, theme: cardTheme }) => {
   const theme = useTheme();
@@ -85,14 +85,11 @@ const SettingCard = ({ icon, title, onPress, theme: cardTheme }) => {
 export default function ProfileScreen() {
   const navigation = useNavigation();
   const theme = useTheme();
-  const [balance] = useState(INITIAL_BALANCE);
   const { setUser, setRole } = useAuth();
 
-  // Calculate statistics
-  const completedChores = chores.filter((c) => c.status === 'COMPLETED').length;
-  const totalChores = chores.length;
-  const completedQuizzes = quizzes.length;
-  const purchasedItems = storeItems.filter((item) => item.purchasedAt).length;
+  const { data: profile, isLoading: isLoadingProfile } = useChildProfile();
+  const { data: chores, isLoading: isLoadingChores } = useChildChores();
+  const { data: storeItems, isLoading: isLoadingStore } = useChildStoreItems();
 
   const handleLogout = () => {
     Alert.alert(
@@ -117,34 +114,48 @@ export default function ProfileScreen() {
     );
   };
 
-  // Mock achievements data
+  if (isLoadingProfile || isLoadingChores || isLoadingStore) {
+    return (
+      <YStack f={1} ai="center" jc="center" backgroundColor="$color2">
+        <Text>Loading...</Text>
+      </YStack>
+    );
+  }
+
+  // Calculate statistics
+  const completedChores = chores?.filter((c) => c.status === 'COMPLETED')?.length || 0;
+  const totalChores = chores?.length || 0;
+  const completedQuizzes = quizzes.length; // Keep static for now
+  const purchasedItems = storeItems?.filter((item) => item.purchasedAt)?.length || 0;
+
+  // Mock achievements data with real progress
   const achievements = [
     {
       icon: 'trophy',
       title: 'Task Master',
       description: `Complete ${totalChores} tasks`,
-      progress: (completedChores / totalChores) * 100,
+      progress: totalChores > 0 ? Math.round((completedChores / totalChores) * 100) : 0,
       theme: 'green',
     },
     {
       icon: 'brain',
       title: 'Quiz Whiz',
       description: 'Complete all quizzes',
-      progress: 60, // Mock progress
+      progress: 60, // Mock progress for now
       theme: 'blue',
     },
     {
       icon: 'piggy-bank',
       title: 'Super Saver',
       description: 'Save 100 coins',
-      progress: (balance / 100) * 100,
+      progress: Math.round(Math.min((profile?.balance / 100) * 100, 100)),
       theme: 'orange',
     },
     {
       icon: 'store',
       title: 'Smart Shopper',
       description: 'Buy 5 items from store',
-      progress: (purchasedItems / 5) * 100,
+      progress: Math.round((purchasedItems / 5) * 100),
       theme: 'purple',
     },
   ];
@@ -153,16 +164,18 @@ export default function ProfileScreen() {
     <ScreenWrapper>
       {/* Profile Header */}
       <YStack ai="center" gap="$4">
-        <Avatar circular size="$12" borderWidth={4} borderColor="$color6">
-          <Avatar.Image source={{ uri: 'https://placecats.com/200/200' }} />
-          <Avatar.Fallback backgroundColor="$color6" />
-        </Avatar>
+        <Circle borderWidth={4} borderColor="$color6">
+          <Avatar circular size="$12">
+            <Avatar.Image source={AVATARS[profile?.avatarUrl] || AVATARS.DEFAULT} />
+            <Avatar.Fallback backgroundColor="$color6" />
+          </Avatar>
+        </Circle>
         <YStack ai="center" gap="$1">
           <Text fontSize="$7" fontWeight="600" fontFamily="$heading">
-            Sarah Smith
+            {profile?.username}
           </Text>
           <Text fontSize="$4" color="$color11">
-            Money Master in Training
+            {getRandomChildTitle()}
           </Text>
         </YStack>
       </YStack>
@@ -177,7 +190,7 @@ export default function ProfileScreen() {
           <StatCard icon="brain" title="Quizzes" value={completedQuizzes} theme="blue" />
         </XStack>
         <XStack gap="$3">
-          <StatCard icon="piggy-bank" title="Savings" value={<CoinAmount amount={balance} />} theme="orange" />
+          <StatCard icon="piggy-bank" title="Savings" value={<CoinAmount amount={profile?.balance || 0} />} theme="orange" />
           <StatCard icon="store" title="Purchases" value={purchasedItems} theme="purple" />
         </XStack>
       </YStack>

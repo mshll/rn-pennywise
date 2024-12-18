@@ -30,3 +30,17 @@ export const INITIAL_BALANCE = 80;
 export const getThemeForRoute = (routeName) => {
   return ROUTE_THEMES[routeName] || ROUTE_THEMES.Home;
 };
+
+export const CHILD_TITLES = [
+  'Money Master In Training',
+  'Future Financial Wizard',
+  'Savings Superhero',
+  'Piggy Bank Pro',
+  'Budget Buddy',
+  'Coin Collector Champion',
+  'Financial Freedom Fighter',
+];
+
+export const getRandomChildTitle = () => {
+  return CHILD_TITLES[Math.floor(Math.random() * CHILD_TITLES.length)];
+};

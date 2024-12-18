@@ -5,6 +5,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ROUTE_THEMES, INITIAL_BALANCE } from '../../data/constants';
 import { CoinAmount } from '../../utils/components';
+import { useChildProfile } from '../../hooks/useChild';
+import { AVATARS } from '../../data/avatars';
 
 import HomeScreen from '../../screens/HomeScreen';
 import ChoresScreen from '../../screens/ChoresScreen';
@@ -19,7 +21,7 @@ const HEADER_HEIGHT = 60;
 const LARGE_TITLE_HEIGHT = 120;
 const SCROLL_THRESHOLD = LARGE_TITLE_HEIGHT;
 
-const CoinBalance = ({ balance = INITIAL_BALANCE, theme }) => (
+const CoinBalance = ({ balance = 0 }) => (
   <XStack ai="center" gap="5" backgroundColor="$color6" py="7" px="$3" borderRadius="$5">
     <CoinAmount amount={balance} src={require('../../../assets/images/piggy.png')} />
   </XStack>
@@ -31,6 +33,7 @@ const CustomHeader = ({ navigation, route, options, back }) => {
   const title = options?.title ?? route?.name;
   const scrollY = options.scrollY || new Animated.Value(0);
   const isProfileScreen = route.name === 'ProfileScreen';
+  const { data: profile } = useChildProfile();
 
   const titleOpacity = scrollY.interpolate({
     inputRange: [0, SCROLL_THRESHOLD],
@@ -65,7 +68,7 @@ const CustomHeader = ({ navigation, route, options, back }) => {
               <Image source={require('../../../assets/pennywise-logo.png')} width={40} height={40} resizeMode="contain" tintColor={theme.color.val} />
             ) : (
               <Avatar circular size="$4" borderWidth={'$1'} borderColor={theme.color6.val}>
-                <Avatar.Image source={{ uri: 'https://placecatss.com/200/200' }} />
+                <Avatar.Image source={profile?.avatarUrl ? AVATARS[profile.avatarUrl] : AVATARS.DEFAULT} />
                 <Avatar.Fallback backgroundColor="$color6" />
               </Avatar>
             )}
@@ -80,7 +83,7 @@ const CustomHeader = ({ navigation, route, options, back }) => {
               {title}
             </Animated.Text>
           </XStack>
-          <CoinBalance theme={theme} />
+          <CoinBalance balance={profile?.balance || 0} />
         </XStack>
 
         <Animated.View

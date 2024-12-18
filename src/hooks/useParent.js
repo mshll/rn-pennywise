@@ -27,7 +27,6 @@ export const useAddChild = () => {
     },
     onError: (error) => {
       showToast(error?.response?.data?.message || 'Failed to add child', 'error');
-      console.log(error);
     },
   });
 };

@@ -96,7 +96,7 @@ const Signup = () => {
   return (
     <Theme name="blue">
       <YStack f={1} backgroundColor="$color2" pt={insets.top} px="$4">
-        <XStack w="100%" jc="flex-start" ai="center" py="$2">
+        <XStack w="100%" jc="flex-start" ai="center">
           <Button
             size="$4"
             circular
@@ -128,6 +128,21 @@ const Signup = () => {
 
           <YStack gap="$4">
             <YStack gap="$4">
+              <Button
+                size="$4"
+                w="100%"
+                bg="$color4"
+                onPress={() => setShowAvatarSheet(true)}
+                disabled={isLoading}
+                animation="bouncy"
+                pressStyle={{ scale: 0.97 }}
+              >
+                <XStack gap="$2" ai="center">
+                  <Image source={AVATARS[formData.avatarUrl]} width={24} height={24} borderRadius={12} />
+                  <Text>Choose Avatar</Text>
+                </XStack>
+              </Button>
+
               <Input
                 size="$4"
                 placeholder="Email"
@@ -178,21 +193,6 @@ const Signup = () => {
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
-
-              <Button
-                size="$4"
-                w="100%"
-                bg="$color4"
-                onPress={() => setShowAvatarSheet(true)}
-                disabled={isLoading}
-                animation="bouncy"
-                pressStyle={{ scale: 0.97 }}
-              >
-                <XStack gap="$2" ai="center">
-                  <Image source={AVATARS[formData.avatarUrl]} width={24} height={24} borderRadius={12} />
-                  <Text>Choose Avatar</Text>
-                </XStack>
-              </Button>
             </YStack>
 
             <Button
@@ -207,7 +207,7 @@ const Signup = () => {
             >
               <XStack gap="$2" ai="center">
                 {isLoading && <Icon name="circle-notch" size={20} color={theme.color.val} style={{ transform: [{ rotate: '360deg' }] }} />}
-                <Text fontSize="$5" fontFamily="$body">
+                <Text fontSize="$4" fontWeight="600" fontFamily="$body">
                   {isLoading ? 'Creating account...' : 'Create Account'}
                 </Text>
               </XStack>

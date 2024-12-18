@@ -15,7 +15,7 @@ const AddChildScreen = () => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-    initialBalance: '100',
+    initialBalance: '',
     dateOfBirth: '',
     avatarUrl: 'avatar1',
   });
