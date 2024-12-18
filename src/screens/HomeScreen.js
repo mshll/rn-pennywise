@@ -4,11 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { QUIZ_LEVELS, THEMES } from '../data/constants';
-import { quizzes } from '../data/quizzes';
 import { moneyTips } from '../data/tips';
 import { CoinAmount } from '../utils/components';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { useChildProfile, useChildChores, useChildStoreItems } from '../hooks/useChild';
+import { useQuizQuestions, useAllAttempts } from '../hooks/useQuiz';
 
 const HEADER_HEIGHT = 60;
 const LARGE_TITLE_HEIGHT = 60;
@@ -94,9 +94,11 @@ const HomeScreen = () => {
   const [tipProgress, setTipProgress] = useState(100);
   const progressInterval = useRef(null);
 
-  const { data: profile, isLoading: isLoadingProfile } = useChildProfile();
-  const { data: chores, isLoading: isLoadingChores } = useChildChores();
-  const { data: storeItems, isLoading: isLoadingStore } = useChildStoreItems();
+  const { data: profile } = useChildProfile();
+  const { data: chores } = useChildChores();
+  const { data: storeItems } = useChildStoreItems();
+  const { data: quizzes } = useQuizQuestions();
+  const { data: attempts } = useAllAttempts();
 
   // Handle tip rotation and progress
   useEffect(() => {
@@ -133,19 +135,10 @@ const HomeScreen = () => {
     setTipProgress(100);
   };
 
-  if (isLoadingProfile || isLoadingChores || isLoadingStore) {
-    return (
-      <YStack f={1} ai="center" jc="center" backgroundColor="$color2">
-        <Text>Loading...</Text>
-      </YStack>
-    );
-  }
-
+  // Calculate stats
   const activeChores = chores?.filter((c) => c.status === 'INCOMPLETE')?.length || 0;
-  const completedChores = chores?.filter((c) => c.status === 'COMPLETED')?.length || 0;
-  const totalChores = chores?.length || 0;
-  const totalQuizzes = quizzes.length;
-  const affordableItems = storeItems?.filter((item) => profile?.balance >= item.price && !item.purchasedAt)?.length || 0;
+  const affordableItems = storeItems?.filter((item) => item.price <= (profile?.balance || 0))?.length || 0;
+  const remainingQuizzes = quizzes?.length - new Set(attempts?.filter((a) => a.correct).map((a) => a.quizQuestionEntity?.id)).size || 0;
 
   return (
     <ScreenWrapper containerProps={{ gap: '$6' }}>
@@ -164,7 +157,7 @@ const HomeScreen = () => {
         </Text>
         <XStack gap="$3">
           <QuickStatsCard icon="piggy-bank" title="My Balance" value={<CoinAmount amount={profile?.balance || 0} />} theme="pink" />
-          <QuickStatsCard icon="list-check" title="Tasks Done" value={`${completedChores}/${totalChores}`} theme="green" />
+          <QuickStatsCard icon="list-check" title="Tasks Done" value={`${activeChores}/${chores?.length || 0}`} theme="green" />
         </XStack>
       </YStack>
 
@@ -195,7 +188,7 @@ const HomeScreen = () => {
 
         <FeaturedCard
           title="Money Quiz"
-          description="Test your knowledge and earn rewards!"
+          description={remainingQuizzes > 0 ? `${remainingQuizzes} new quizzes to try!` : 'All quizzes completed! Great job! 🎉'}
           icon="brain"
           theme="blue"
           onPress={() => navigation.navigate('Quizzes')}

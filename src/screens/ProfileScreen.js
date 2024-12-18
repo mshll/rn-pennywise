@@ -3,12 +3,12 @@ import { useState, useRef, useLayoutEffect } from 'react';
 import { Animated, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { quizzes } from '../data/quizzes';
 import { CoinAmount } from '../utils/components';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { deleteToken } from '../api/storage';
 import { useAuth } from '../context/AuthContext';
 import { useChildProfile, useChildChores, useChildStoreItems } from '../hooks/useChild';
+import { useQuizQuestions, useAllAttempts, useTotalQuizRewards } from '../hooks/useQuiz';
 import { AVATARS } from '../data/avatars';
 import { getRandomChildTitle } from '../data/constants';
 
@@ -90,6 +90,9 @@ export default function ProfileScreen() {
   const { data: profile, isLoading: isLoadingProfile } = useChildProfile();
   const { data: chores, isLoading: isLoadingChores } = useChildChores();
   const { data: storeItems, isLoading: isLoadingStore } = useChildStoreItems();
+  const { data: quizzes, isLoading: isLoadingQuizzes } = useQuizQuestions();
+  const { data: attempts, isLoading: isLoadingAttempts } = useAllAttempts();
+  const { data: quizRewards, isLoading: isLoadingRewards } = useTotalQuizRewards();
 
   const handleLogout = () => {
     Alert.alert(
@@ -114,7 +117,7 @@ export default function ProfileScreen() {
     );
   };
 
-  if (isLoadingProfile || isLoadingChores || isLoadingStore) {
+  if (isLoadingProfile || isLoadingChores || isLoadingStore || isLoadingQuizzes || isLoadingAttempts || isLoadingRewards) {
     return (
       <YStack f={1} ai="center" jc="center" backgroundColor="$color2">
         <Text>Loading...</Text>
@@ -125,10 +128,12 @@ export default function ProfileScreen() {
   // Calculate statistics
   const completedChores = chores?.filter((c) => c.status === 'COMPLETED')?.length || 0;
   const totalChores = chores?.length || 0;
-  const completedQuizzes = quizzes.length; // Keep static for now
+  const totalQuizzes = quizzes?.length || 0;
+  const completedQuizzes = new Set(attempts?.filter((a) => a.correct).map((a) => a.quizQuestionEntity?.id)).size;
+  const correctQuizzes = attempts?.filter((a) => a.correct)?.length || 0;
   const purchasedItems = storeItems?.filter((item) => item.purchasedAt)?.length || 0;
 
-  // Mock achievements data with real progress
+  // Calculate achievements
   const achievements = [
     {
       icon: 'trophy',
@@ -141,7 +146,7 @@ export default function ProfileScreen() {
       icon: 'brain',
       title: 'Quiz Whiz',
       description: 'Complete all quizzes',
-      progress: 60, // Mock progress for now
+      progress: totalQuizzes > 0 ? Math.round((completedQuizzes / totalQuizzes) * 100) : 0,
       theme: 'blue',
     },
     {
@@ -187,7 +192,7 @@ export default function ProfileScreen() {
         </Text>
         <XStack gap="$3">
           <StatCard icon="list-check" title="Tasks Done" value={`${completedChores}/${totalChores}`} theme="green" />
-          <StatCard icon="brain" title="Quizzes" value={completedQuizzes} theme="blue" />
+          <StatCard icon="brain" title="Quizzes" value={`${completedQuizzes}/${totalQuizzes}`} theme="blue" />
         </XStack>
         <XStack gap="$3">
           <StatCard icon="piggy-bank" title="Savings" value={<CoinAmount amount={profile?.balance || 0} />} theme="orange" />

@@ -12,10 +12,10 @@ const BottomNav = () => {
   const state = useNavigationState((state) => state);
   const currentRoute = state?.routes[state.index]?.name || 'Home';
 
-  // Check if we're in the QuizQuestion screen
-  const isQuizQuestion = state?.routes?.some((route) => {
+  // Check if we're in any quiz-related screen
+  const isQuizScreen = state?.routes?.some((route) => {
     if (route.name === 'Quizzes' && route.state?.routes) {
-      return route.state.routes.some((r) => r.name === 'QuizQuestion');
+      return route.state.routes.some((r) => ['QuizQuestion', 'QuizResult'].includes(r.name));
     }
     return false;
   });
@@ -31,7 +31,7 @@ const BottomNav = () => {
           borderTopWidth: 0.5,
           borderTopColor: theme.borderColor.val,
           paddingTop: 5,
-          display: isQuizQuestion ? 'none' : 'flex',
+          display: isQuizScreen ? 'none' : 'flex',
         },
         tabBarActiveTintColor: theme.color11.val,
         tabBarInactiveTintColor: theme.color7.val,

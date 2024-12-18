@@ -1,5 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { Theme, useTheme, XStack, Text, Image, Avatar, YStack } from 'tamagui';
+import { Theme, useTheme, XStack, Text, Image, Avatar, YStack, Circle } from 'tamagui';
 import { Pressable, Animated } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import QuizzesScreen from '../../screens/QuizzesScreen';
 import QuizQuestionScreen from '../../screens/QuizQuestionScreen';
 import StoreScreen from '../../screens/StoreScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
+import QuizResultScreen from '../../screens/QuizResultScreen';
 
 const Stack = createStackNavigator();
 
@@ -67,10 +68,12 @@ const CustomHeader = ({ navigation, route, options, back }) => {
             {isProfileScreen ? (
               <Image source={require('../../../assets/pennywise-logo.png')} width={40} height={40} resizeMode="contain" tintColor={theme.color.val} />
             ) : (
-              <Avatar circular size="$4" borderWidth={'$1'} borderColor={theme.color6.val}>
-                <Avatar.Image source={profile?.avatarUrl ? AVATARS[profile.avatarUrl] : AVATARS.DEFAULT} />
-                <Avatar.Fallback backgroundColor="$color6" />
-              </Avatar>
+              <Circle bg="$color6" p="$1.5">
+                <Avatar circular size="$4">
+                  <Avatar.Image source={profile?.avatarUrl ? AVATARS[profile.avatarUrl] : AVATARS.DEFAULT} />
+                  <Avatar.Fallback backgroundColor="$color6" />
+                </Avatar>
+              </Circle>
             )}
             <Animated.Text
               style={{
@@ -196,6 +199,17 @@ export const QuizzesNavigation = createStackNav(
         presentation: 'modal',
         animation: 'slide_from_bottom',
         animationEnabled: true,
+      },
+    },
+    {
+      name: 'QuizResult',
+      component: QuizResultScreen,
+      options: {
+        headerShown: false,
+        presentation: 'modal',
+        animation: 'slide_from_bottom',
+        animationEnabled: true,
+        cardStyle: { backgroundColor: 'transparent' },
       },
     },
   ],

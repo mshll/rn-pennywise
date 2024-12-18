@@ -1,6 +1,6 @@
 import { YStack, useTheme } from 'tamagui';
 import { useRef, useLayoutEffect } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export const HEADER_HEIGHT = 60;
@@ -26,7 +26,7 @@ const ScreenWrapper = ({ children, containerProps = {}, scrollViewProps = {} }) 
       showsVerticalScrollIndicator={false}
       {...scrollViewProps}
     >
-      <YStack f={1} gap="$4" px="$4" pb="$6" {...containerProps}>
+      <YStack f={1} gap="$4" px="$4" pb="$6" minHeight={Dimensions.get('window').height} {...containerProps}>
         {children}
       </YStack>
     </Animated.ScrollView>
