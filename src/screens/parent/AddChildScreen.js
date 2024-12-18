@@ -72,6 +72,8 @@ const AddChildScreen = () => {
                 value={formData.username}
                 onChangeText={(value) => setFormData((prev) => ({ ...prev, username: value }))}
                 autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -82,6 +84,8 @@ const AddChildScreen = () => {
                 value={formData.email}
                 onChangeText={(value) => setFormData((prev) => ({ ...prev, email: value }))}
                 autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 keyboardType="email-address"
                 backgroundColor="$color4"
                 disabled={isLoading}
@@ -93,6 +97,9 @@ const AddChildScreen = () => {
                 value={formData.password}
                 onChangeText={(value) => setFormData((prev) => ({ ...prev, password: value }))}
                 secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -103,6 +110,9 @@ const AddChildScreen = () => {
                 value={formData.initialBalance}
                 onChangeText={(value) => setFormData((prev) => ({ ...prev, initialBalance: value }))}
                 keyboardType="numeric"
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -112,6 +122,9 @@ const AddChildScreen = () => {
                 placeholder="Date of Birth (YYYY-MM-DD)"
                 value={formData.dateOfBirth}
                 onChangeText={(value) => setFormData((prev) => ({ ...prev, dateOfBirth: value }))}
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />

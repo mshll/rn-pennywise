@@ -134,6 +134,8 @@ const Signup = () => {
                 value={formData.email}
                 onChangeText={(value) => handleInputChange('email', value)}
                 autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 keyboardType="email-address"
                 backgroundColor="$color4"
                 disabled={isLoading}
@@ -145,6 +147,8 @@ const Signup = () => {
                 value={formData.username}
                 onChangeText={(value) => handleInputChange('username', value)}
                 autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -155,6 +159,9 @@ const Signup = () => {
                 value={formData.password}
                 onChangeText={(value) => handleInputChange('password', value)}
                 secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -165,6 +172,9 @@ const Signup = () => {
                 value={formData.confirmPassword}
                 onChangeText={(value) => handleInputChange('confirmPassword', value)}
                 secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />

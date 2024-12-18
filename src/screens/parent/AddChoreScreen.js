@@ -137,6 +137,9 @@ const AddChoreScreen = ({ route }) => {
                 placeholder="Task Title"
                 value={formData.title}
                 onChangeText={(value) => setFormData((prev) => ({ ...prev, title: value }))}
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -146,6 +149,9 @@ const AddChoreScreen = ({ route }) => {
                 placeholder="Description"
                 value={formData.description}
                 onChangeText={(value) => setFormData((prev) => ({ ...prev, description: value }))}
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 multiline
                 numberOfLines={3}
@@ -159,6 +165,9 @@ const AddChoreScreen = ({ route }) => {
                 value={formData.rewardAmount}
                 onChangeText={(value) => setFormData((prev) => ({ ...prev, rewardAmount: value }))}
                 keyboardType="numeric"
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
