@@ -7,7 +7,13 @@ export const getParentProfile = async () => {
 
 // Add child to parent
 export const addChild = async (childData) => {
-  const response = await instance.post('/children/parent', childData);
+  const response = await instance.post('/children/parent', {
+    username: childData.username,
+    password: childData.password,
+    initialBalance: childData.initialBalance,
+    dateOfBirth: childData.dateOfBirth,
+    avatarUrl: childData.avatarUrl,
+  });
   return response.data;
 };
 

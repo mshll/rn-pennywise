@@ -33,7 +33,7 @@ import {
   Rubik_900Black,
 } from '@expo-google-fonts/dev';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
-import { getRole, getToken } from './src/api/storage';
+import { deleteToken, getRole, getToken } from './src/api/storage';
 import AuthNavigation from './src/navigation/AuthNavigation.js/AuthNavigation';
 import { ToastProvider } from './src/components/Toast';
 

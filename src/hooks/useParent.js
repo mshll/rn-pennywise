@@ -20,12 +20,14 @@ export const useAddChild = () => {
 
   return useMutation({
     mutationFn: addChild,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(['parentProfile']);
       showToast('Child added successfully!');
+      return data;
     },
     onError: (error) => {
       showToast(error?.response?.data?.message || 'Failed to add child', 'error');
+      console.log(error);
     },
   });
 };

@@ -5,6 +5,7 @@ import { THEMES } from '../../data/constants';
 import { CoinAmount } from '../../utils/components';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 import { useParentProfile, useChildChores } from '../../hooks/useParent';
+import { AVATARS } from '../../data/avatars';
 
 const ChildCard = ({ child, onPress, theme: cardTheme }) => {
   const theme = useTheme();
@@ -18,8 +19,8 @@ const ChildCard = ({ child, onPress, theme: cardTheme }) => {
     <Theme name={cardTheme}>
       <Card bg="$color6" br="$6" p="$4" bc="$color4" borderBottomWidth={4} pressStyle={{ scale: 0.95 }} animation="bouncy" onPress={onPress}>
         <XStack gap="$3" ai="center">
-          <Circle size="$6" bg="$color3">
-            <Image source={require('../../../assets/avatars/avatar1.png')} width={48} height={48} borderRadius={24} />
+          <Circle bw="$1.5" bc="$color3">
+            <Image source={AVATARS[child.avatarUrl] || AVATARS.DEFAULT} width="$6" height="$6" borderRadius={24} />
           </Circle>
           <YStack f={1} gap="$2">
             <Text fontSize="$5" fontWeight="600" fontFamily="$heading">

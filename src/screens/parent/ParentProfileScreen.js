@@ -83,7 +83,7 @@ const ParentProfileScreen = () => {
   return (
     <ParentScreenWrapper containerProps={{ gap: '$6' }}>
       <YStack ai="center" gap="$4">
-        <Circle borderWidth={4} borderColor="$color6">
+        <Circle bw="$1.5" bc="$color6">
           <Avatar circular size="$12">
             <Avatar.Image source={AVATARS[parentProfile.avatarUrl] || AVATARS.DEFAULT} />
             <Avatar.Fallback backgroundColor="$color6" />
@@ -105,22 +105,24 @@ const ParentProfileScreen = () => {
         </Text>
         <XStack gap="$3" flexWrap="wrap">
           {parentProfile.children?.map((child) => (
-            <Avatar
+            <Circle
+              bw="$1.5"
+              bc="$color6"
               key={child.id}
-              circular
-              size="$8"
-              borderWidth={3}
-              borderColor="$color6"
               pressStyle={{ scale: 0.95 }}
               animation="bouncy"
               onPress={() => navigation.navigate('ChildDetailsScreen', { childId: child.id })}
             >
-              <Avatar.Image source={require('../../../assets/avatars/avatar1.png')} />
-              <Avatar.Fallback backgroundColor="$color6" />
-            </Avatar>
+              <Avatar circular size="$8">
+                <Avatar.Image source={AVATARS[child.avatarUrl] || AVATARS.DEFAULT} />
+                <Avatar.Fallback backgroundColor="$color6" />
+              </Avatar>
+            </Circle>
           ))}
-          <Theme name="green">
+          <Theme name="pink">
             <Button
+              bw="$1"
+              bc="$color6"
               size="$8"
               circular
               bg="$color4"

@@ -6,6 +6,22 @@ import { CoinAmount } from '../../utils/components';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 import TaskCard from '../../components/parent/TaskCard';
 import { useParentProfile, useChildChores, useChildStoreItems } from '../../hooks/useParent';
+import { AVATARS } from '../../data/avatars';
+
+// Helper function to calculate age
+const calculateAge = (dateOfBirth) => {
+  if (!dateOfBirth) return null;
+  const birthDate = new Date(dateOfBirth);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
+};
 
 const QuickStatsCard = ({ icon, title, value, theme: cardTheme }) => {
   const theme = useTheme();
@@ -88,16 +104,18 @@ const ChildDetailsScreen = ({ route }) => {
   return (
     <ParentScreenWrapper containerProps={{ gap: '$6' }}>
       <YStack ai="center" gap="$4">
-        <Avatar circular size="$12" borderWidth={4} borderColor="$color6">
-          <Avatar.Image source={require('../../../assets/avatars/avatar1.png')} />
-          <Avatar.Fallback backgroundColor="$color6" />
-        </Avatar>
+        <Circle bw="$1.5" bc="$color6">
+          <Avatar circular size="$12">
+            <Avatar.Image source={AVATARS[child.avatarUrl] || AVATARS.DEFAULT} />
+            <Avatar.Fallback backgroundColor="$color6" />
+          </Avatar>
+        </Circle>
         <YStack ai="center" gap="$1">
           <Text fontSize="$7" fontWeight="600" fontFamily="$heading">
             {child.username}
           </Text>
           <Text fontSize="$4" color="$color11">
-            {child.email}
+            {calculateAge(child.dateOfBirth)} years old
           </Text>
         </YStack>
       </YStack>
