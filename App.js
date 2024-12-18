@@ -33,7 +33,7 @@ import {
   Rubik_900Black,
 } from '@expo-google-fonts/dev';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
-import { getRole, getToken } from './src/api/storage';
+import { deleteToken, getRole, getToken } from './src/api/storage';
 import AuthNavigation from './src/navigation/AuthNavigation.js/AuthNavigation';
 import { ToastProvider } from './src/components/Toast';
 
@@ -102,13 +102,13 @@ export default function App() {
   });
 
   if (!fontsLoaded) {
-    return <LoadingScreen />;
+    return null;
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TamaguiProvider config={tamaguiConfig}>
-        <Theme name="light">
+    <TamaguiProvider config={tamaguiConfig}>
+      <Theme name="light">
+        <QueryClientProvider client={queryClient}>
           <ToastProvider>
             <AuthProvider>
               <NavigationContainer>
@@ -117,8 +117,8 @@ export default function App() {
             </AuthProvider>
           </ToastProvider>
           <StatusBar style="auto" />
-        </Theme>
-      </TamaguiProvider>
-    </QueryClientProvider>
+        </QueryClientProvider>
+      </Theme>
+    </TamaguiProvider>
   );
 }

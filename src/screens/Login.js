@@ -106,6 +106,8 @@ const Login = () => {
                 value={formData.username}
                 onChangeText={(value) => handleInputChange('username', value)}
                 autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -116,6 +118,9 @@ const Login = () => {
                 value={formData.password}
                 onChangeText={(value) => handleInputChange('password', value)}
                 secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />

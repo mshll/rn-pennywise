@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FlatList } from 'react-native';
-import { CoinAmount } from '../../utils/components';
+import { useAddChore } from '../../hooks/useParent';
 
 const icons = [
   'broom',
@@ -57,23 +57,42 @@ const AddChoreScreen = ({ route }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { childId } = route.params;
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [reward, setReward] = useState('');
-  const [icon, setIcon] = useState('broom');
+  const { mutate: addChore, isLoading } = useAddChore();
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    rewardAmount: '',
+    icon: 'broom',
+  });
 
   const handleSubmit = useCallback(() => {
-    // TODO: Implement add chore logic
-    navigation.goBack();
-  }, [navigation]);
+    const choreData = {
+      ...formData,
+      rewardAmount: parseFloat(formData.rewardAmount),
+    };
+    addChore(
+      { childId, choreData },
+      {
+        onSuccess: () => {
+          navigation.goBack();
+        },
+      }
+    );
+  }, [formData, childId, addChore, navigation]);
 
   const renderIcon = useCallback(
     ({ item }) => (
       <XStack pr="$2">
-        <IconButton iconName={item} isSelected={icon === item} onPress={() => setIcon(item)} theme={theme} />
+        <IconButton
+          iconName={item}
+          isSelected={formData.icon === item}
+          onPress={() => setFormData((prev) => ({ ...prev, icon: item }))}
+          theme={theme}
+        />
       </XStack>
     ),
-    [icon, theme]
+    [formData.icon, theme]
   );
 
   const keyExtractor = useCallback((item) => item, []);
@@ -82,7 +101,15 @@ const AddChoreScreen = ({ route }) => {
     <Theme name="green">
       <YStack f={1} backgroundColor="$color2" pt={insets.top} px="$4">
         <XStack w="100%" jc="flex-end" ai="center" py="$2">
-          <Button size="$4" circular bg="$color4" pressStyle={{ scale: 0.9 }} onPress={() => navigation.goBack()} animation="quick">
+          <Button
+            size="$4"
+            circular
+            bg="$color4"
+            pressStyle={{ scale: 0.9 }}
+            onPress={() => navigation.goBack()}
+            animation="quick"
+            disabled={isLoading}
+          >
             <Icon name="xmark" size={16} color={theme.color.val} />
           </Button>
         </XStack>
@@ -105,26 +132,44 @@ const AddChoreScreen = ({ route }) => {
 
           <Form gap="$4" onSubmit={handleSubmit}>
             <YStack gap="$4">
-              <Input size="$4" placeholder="Task Title" value={title} onChangeText={setTitle} backgroundColor="$color4" />
+              <Input
+                size="$4"
+                placeholder="Task Title"
+                value={formData.title}
+                onChangeText={(value) => setFormData((prev) => ({ ...prev, title: value }))}
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
+                backgroundColor="$color4"
+                disabled={isLoading}
+              />
 
               <Input
                 size="$4"
                 placeholder="Description"
-                value={description}
-                onChangeText={setDescription}
+                value={formData.description}
+                onChangeText={(value) => setFormData((prev) => ({ ...prev, description: value }))}
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 multiline
                 numberOfLines={3}
                 textAlignVertical="top"
+                disabled={isLoading}
               />
 
               <Input
                 size="$4"
                 placeholder="Reward Amount"
-                value={reward}
-                onChangeText={setReward}
-                keyboardType="number-pad"
+                value={formData.rewardAmount}
+                onChangeText={(value) => setFormData((prev) => ({ ...prev, rewardAmount: value }))}
+                keyboardType="numeric"
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
+                disabled={isLoading}
               />
 
               <YStack gap="$2">
@@ -142,7 +187,7 @@ const AddChoreScreen = ({ route }) => {
                   windowSize={5}
                   removeClippedSubviews={true}
                   getItemLayout={(data, index) => ({
-                    length: 48, // Button size + padding
+                    length: 48,
                     offset: 48 * index,
                     index,
                   })}
@@ -155,13 +200,17 @@ const AddChoreScreen = ({ route }) => {
               size="$5"
               w="100%"
               bg="$color4"
-              icon={<Icon name="plus" size={16} color={theme.color.val} />}
+              icon={isLoading ? undefined : <Icon name="plus" size={16} color={theme.color.val} />}
               onPress={handleSubmit}
               animation="quick"
+              disabled={isLoading}
             >
-              <Text fontSize="$5" fontFamily="$body">
-                Add Task
-              </Text>
+              <XStack gap="$2" ai="center">
+                {isLoading && <Icon name="circle-notch" size={20} color={theme.color.val} style={{ transform: [{ rotate: '360deg' }] }} />}
+                <Text fontSize="$5" fontFamily="$body">
+                  {isLoading ? 'Adding Task...' : 'Add Task'}
+                </Text>
+              </XStack>
             </Button>
           </Form>
         </YStack>

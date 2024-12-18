@@ -14,7 +14,7 @@ const Welcome = () => {
         <YStack f={1} ai="center" jc="center" gap="$8">
           {/* Logo */}
           <YStack ai="center" gap="$4">
-            <Image source={require('../../assets/pennywise-logo.png')} width={120} height={120} resizeMode="contain" />
+            <Image source={require('../../assets/pennywise-logo.png')} width={120} height={120} resizeMode="contain" tintColor={theme.color.val} />
             <YStack ai="center" gap="$2">
               <Text fontSize="$8" fontWeight="600" fontFamily="$heading" ta="center">
                 Welcome to PennyWise

@@ -1,4 +1,4 @@
-import { Text, YStack, XStack, Input, Button, Theme, Circle, useTheme } from 'tamagui';
+import { Text, YStack, XStack, Input, Button, Theme, Circle, useTheme, Sheet, ScrollView, Image } from 'tamagui';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,6 +8,7 @@ import { register } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
 import { getRole } from '../api/storage';
 import { useToast } from '../components/Toast';
+import { AVATARS } from '../data/avatars';
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -21,14 +22,17 @@ const Signup = () => {
     username: '',
     password: '',
     confirmPassword: '',
+    avatarUrl: 'avatar1',
   });
+
+  const [showAvatarSheet, setShowAvatarSheet] = useState(false);
 
   const {
     mutate: registerUser,
     isLoading,
     reset: resetMutation,
   } = useMutation({
-    mutationFn: () => register(formData.email, formData.username, formData.password),
+    mutationFn: () => register(formData.email, formData.username, formData.password, formData.avatarUrl),
     onSuccess: async (response) => {
       try {
         setUser(response.token);
@@ -108,8 +112,8 @@ const Signup = () => {
 
         <YStack f={1} gap="$4">
           <XStack w="100%" jc="center" ai="center" mb="$4">
-            <Circle size="$12" bg="$color4">
-              <Icon name="user-plus" size={42} color={theme.color.val} />
+            <Circle size="$12" bg="$color4" p="$2">
+              <Image source={AVATARS[formData.avatarUrl]} width="100%" height="100%" borderRadius={999} />
             </Circle>
           </XStack>
 
@@ -130,6 +134,8 @@ const Signup = () => {
                 value={formData.email}
                 onChangeText={(value) => handleInputChange('email', value)}
                 autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 keyboardType="email-address"
                 backgroundColor="$color4"
                 disabled={isLoading}
@@ -141,6 +147,8 @@ const Signup = () => {
                 value={formData.username}
                 onChangeText={(value) => handleInputChange('username', value)}
                 autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -151,6 +159,9 @@ const Signup = () => {
                 value={formData.password}
                 onChangeText={(value) => handleInputChange('password', value)}
                 secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
@@ -161,9 +172,27 @@ const Signup = () => {
                 value={formData.confirmPassword}
                 onChangeText={(value) => handleInputChange('confirmPassword', value)}
                 secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
+
+              <Button
+                size="$4"
+                w="100%"
+                bg="$color4"
+                onPress={() => setShowAvatarSheet(true)}
+                disabled={isLoading}
+                animation="bouncy"
+                pressStyle={{ scale: 0.97 }}
+              >
+                <XStack gap="$2" ai="center">
+                  <Image source={AVATARS[formData.avatarUrl]} width={24} height={24} borderRadius={12} />
+                  <Text>Choose Avatar</Text>
+                </XStack>
+              </Button>
             </YStack>
 
             <Button
@@ -200,6 +229,38 @@ const Signup = () => {
             </Text>
           </YStack>
         </YStack>
+
+        <Sheet modal open={showAvatarSheet} onOpenChange={setShowAvatarSheet} snapPointsMode="fit" dismissOnSnapToBottom>
+          <Sheet.Overlay />
+          <Sheet.Frame padding="$4" pb="$8">
+            <Sheet.Handle />
+            <YStack gap="$4">
+              <Text fontSize="$6" fontWeight="600" ta="center">
+                Choose Your Avatar
+              </Text>
+              <XStack flexWrap="wrap" jc="center" gap="$4">
+                {Object.entries(AVATARS).map(
+                  ([key, value]) =>
+                    key !== 'DEFAULT' && (
+                      <Button
+                        key={key}
+                        size="$6"
+                        circular
+                        onPress={() => {
+                          handleInputChange('avatarUrl', key);
+                          setShowAvatarSheet(false);
+                        }}
+                        borderWidth={formData.avatarUrl === key ? 2 : 0}
+                        borderColor="$color12"
+                      >
+                        <Image source={value} width={48} height={48} borderRadius={24} />
+                      </Button>
+                    )
+                )}
+              </XStack>
+            </YStack>
+          </Sheet.Frame>
+        </Sheet>
       </YStack>
     </Theme>
   );

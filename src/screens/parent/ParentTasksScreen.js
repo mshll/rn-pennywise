@@ -1,82 +1,26 @@
-import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button, Image, Progress } from 'tamagui';
-import { useState } from 'react';
+import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button, Image } from 'tamagui';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { THEMES } from '../../data/constants';
-import { CoinAmount } from '../../utils/components';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 import TaskCard from '../../components/parent/TaskCard';
-
-// Dummy data for chores
-const dummyChores = [
-  {
-    childId: 1,
-    childName: 'Sarah Smith',
-    childAvatar: 'https://placecats.com/200/200',
-    chores: [
-      {
-        id: 1,
-        title: 'Clean Room',
-        description: 'Make your bed and organize your toys',
-        reward_amount: 10,
-        status: 'INCOMPLETE',
-        icon: 'broom',
-      },
-      {
-        id: 2,
-        title: 'Do Homework',
-        description: "Complete today's math homework",
-        reward_amount: 15,
-        status: 'COMPLETED',
-        icon: 'book',
-      },
-    ],
-  },
-  {
-    childId: 2,
-    childName: 'John Smith Jr.',
-    childAvatar: 'https://placecats.com/201/201',
-    chores: [
-      {
-        id: 3,
-        title: 'Feed the Dog',
-        description: 'Give Rex his dinner',
-        reward_amount: 5,
-        status: 'INCOMPLETE',
-        icon: 'dog',
-      },
-      {
-        id: 4,
-        title: 'Practice Piano',
-        description: '30 minutes of piano practice',
-        reward_amount: 20,
-        status: 'INCOMPLETE',
-        icon: 'music',
-      },
-    ],
-  },
-];
+import { useParentProfile, useChildChores } from '../../hooks/useParent';
 
 const ChildChoresSection = ({ child }) => {
   const theme = useTheme();
   const navigation = useNavigation();
-  const completedChores = child.chores.filter((chore) => chore.status === 'COMPLETED').length;
-  const totalChores = child.chores.length;
-  const progress = Math.round((completedChores / totalChores) * 100);
+  const { data: chores, isLoading } = useChildChores(child.id);
 
   return (
     <YStack gap="$3">
       <XStack jc="space-between" ai="center">
         <XStack gap="$2" ai="center">
           <Circle size="$6" bg="$color4">
-            <Image source={{ uri: child.childAvatar }} width={48} height={48} borderRadius={24} />
+            <Image source={require('../../../assets/avatars/avatar1.png')} width={48} height={48} borderRadius={24} />
           </Circle>
           <YStack>
             <Text fontSize="$5" fontWeight="600" fontFamily="$heading">
-              {child.childName}
-            </Text>
-            <Text fontSize="$3" color="$color11">
-              {completedChores}/{totalChores} Tasks Done
+              {child.username}
             </Text>
           </YStack>
         </XStack>
@@ -85,22 +29,34 @@ const ChildChoresSection = ({ child }) => {
             size="$3"
             bg="$color4"
             icon={<Icon name="plus" size={12} color={theme.color.val} />}
-            onPress={() => navigation.navigate('AddChoreScreen', { childId: child.childId })}
+            onPress={() => navigation.navigate('AddChoreScreen', { childId: child.id })}
           >
             <Text>Add Task</Text>
           </Button>
         </Theme>
       </XStack>
 
-      <Progress size="$1" value={progress} bg="$color4">
-        <Progress.Indicator animation="bouncy" bg="$color11" />
-      </Progress>
+      {isLoading ? (
+        <Card bg="$color4" br="$6" p="$4">
+          <Text fontSize="$3" color="$color11" ta="center">
+            Loading...
+          </Text>
+        </Card>
+      ) : (
+        <>
+          {chores?.map((chore, index) => (
+            <TaskCard key={chore.id} task={chore} theme={THEMES[index % THEMES.length]} />
+          ))}
 
-      <YStack gap="$2">
-        {child.chores.map((chore, index) => (
-          <TaskCard key={chore.id} task={chore} theme={THEMES[index % THEMES.length]} />
-        ))}
-      </YStack>
+          {(!chores || chores.length === 0) && (
+            <Card bg="$color4" br="$6" p="$4">
+              <Text fontSize="$3" color="$color11" ta="center">
+                No tasks assigned yet
+              </Text>
+            </Card>
+          )}
+        </>
+      )}
     </YStack>
   );
 };
@@ -108,7 +64,27 @@ const ChildChoresSection = ({ child }) => {
 const ParentTasksScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
-  const [data] = useState(dummyChores);
+  const { data: parentProfile, isLoading, error } = useParentProfile();
+
+  if (isLoading) {
+    return (
+      <ParentScreenWrapper>
+        <YStack f={1} ai="center" jc="center">
+          <Text>Loading...</Text>
+        </YStack>
+      </ParentScreenWrapper>
+    );
+  }
+
+  if (error) {
+    return (
+      <ParentScreenWrapper>
+        <YStack f={1} ai="center" jc="center">
+          <Text color="$red10">Error loading profile</Text>
+        </YStack>
+      </ParentScreenWrapper>
+    );
+  }
 
   return (
     <ParentScreenWrapper containerProps={{ gap: '$6' }}>
@@ -121,11 +97,11 @@ const ParentTasksScreen = () => {
         </Text>
       </YStack>
 
-      {data.map((child) => (
-        <ChildChoresSection key={child.childId} child={child} />
+      {parentProfile?.children?.map((child) => (
+        <ChildChoresSection key={child.id} child={child} />
       ))}
 
-      {data.length === 0 && (
+      {(!parentProfile?.children || parentProfile.children.length === 0) && (
         <YStack ai="center" jc="center" h={200} gap="$4">
           <Circle size="$8" bg="$color4">
             <Icon name="list-check" size={32} color={theme.color.val} />

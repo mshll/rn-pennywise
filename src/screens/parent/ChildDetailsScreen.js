@@ -1,63 +1,27 @@
 import { Text, YStack, XStack, Card, Theme, Circle, useTheme, Button, Image, Progress, Avatar, ScrollView } from 'tamagui';
-import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { THEMES } from '../../data/constants';
 import { CoinAmount } from '../../utils/components';
 import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 import TaskCard from '../../components/parent/TaskCard';
+import { useParentProfile, useChildChores, useChildStoreItems } from '../../hooks/useParent';
+import { AVATARS } from '../../data/avatars';
 
-// Dummy data for child details
-const dummyChild = {
-  id: 1,
-  name: 'Sarah Smith',
-  balance: 80,
-  activeChores: 3,
-  completedChores: 5,
-  totalChores: 8,
-  avatar: 'https://placecats.com/200/200',
-  email: 'sarah@example.com',
-  birthYear: 2012,
-  username: 'sarahsmith',
+// Helper function to calculate age
+const calculateAge = (dateOfBirth) => {
+  if (!dateOfBirth) return null;
+  const birthDate = new Date(dateOfBirth);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
 };
-
-// Dummy data for chores
-const dummyChores = [
-  {
-    id: 1,
-    title: 'Clean Room',
-    description: 'Make your bed and organize your toys',
-    reward_amount: 10,
-    status: 'INCOMPLETE',
-    icon: 'broom',
-  },
-  {
-    id: 2,
-    title: 'Do Homework',
-    description: "Complete today's math homework",
-    reward_amount: 15,
-    status: 'COMPLETED',
-    icon: 'book',
-  },
-];
-
-// Dummy data for store items
-const dummyStoreItems = [
-  {
-    item_id: 1,
-    name: 'Extra Screen Time',
-    description: '30 minutes of extra screen time',
-    price: 50,
-    image: 'https://placecats.com/300/200',
-  },
-  {
-    item_id: 2,
-    name: 'Ice Cream Trip',
-    description: 'A trip to the ice cream shop',
-    price: 100,
-    image: 'https://placecats.com/301/200',
-  },
-];
 
 const QuickStatsCard = ({ icon, title, value, theme: cardTheme }) => {
   const theme = useTheme();
@@ -105,23 +69,53 @@ const ChildDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
   const theme = useTheme();
   const { childId } = route.params;
-  const [child] = useState(dummyChild);
-  const [chores] = useState(dummyChores);
-  const [storeItems] = useState(dummyStoreItems);
+
+  const { data: parentProfile, isLoading: isLoadingProfile } = useParentProfile();
+  const { data: chores, isLoading: isLoadingChores } = useChildChores(childId);
+  const { data: storeItems, isLoading: isLoadingStoreItems } = useChildStoreItems(childId);
+
+  const child = parentProfile?.children?.find((c) => c.id === childId);
+
+  const isLoading = isLoadingProfile || isLoadingChores || isLoadingStoreItems;
+
+  if (isLoading) {
+    return (
+      <ParentScreenWrapper>
+        <YStack f={1} ai="center" jc="center">
+          <Text>Loading...</Text>
+        </YStack>
+      </ParentScreenWrapper>
+    );
+  }
+
+  if (!child) {
+    return (
+      <ParentScreenWrapper>
+        <YStack f={1} ai="center" jc="center">
+          <Text color="$red10">Child not found</Text>
+        </YStack>
+      </ParentScreenWrapper>
+    );
+  }
+
+  const completedChores = chores?.filter((c) => c.status === 'COMPLETED')?.length || 0;
+  const totalChores = chores?.length || 0;
 
   return (
     <ParentScreenWrapper containerProps={{ gap: '$6' }}>
       <YStack ai="center" gap="$4">
-        <Avatar circular size="$12" borderWidth={4} borderColor="$color6">
-          <Avatar.Image source={{ uri: child.avatar }} />
-          <Avatar.Fallback backgroundColor="$color6" />
-        </Avatar>
+        <Circle bw="$1.5" bc="$color6">
+          <Avatar circular size="$12">
+            <Avatar.Image source={AVATARS[child.avatarUrl] || AVATARS.DEFAULT} />
+            <Avatar.Fallback backgroundColor="$color6" />
+          </Avatar>
+        </Circle>
         <YStack ai="center" gap="$1">
           <Text fontSize="$7" fontWeight="600" fontFamily="$heading">
-            {child.name}
+            {child.username}
           </Text>
           <Text fontSize="$4" color="$color11">
-            @{child.username}
+            {calculateAge(child.dateOfBirth)} years old
           </Text>
         </YStack>
       </YStack>
@@ -132,7 +126,7 @@ const ChildDetailsScreen = ({ route }) => {
         </Text>
         <XStack gap="$3">
           <QuickStatsCard icon="piggy-bank" title="Balance" value={<CoinAmount amount={child.balance} />} theme="pink" />
-          <QuickStatsCard icon="list-check" title="Tasks Done" value={`${child.completedChores}/${child.totalChores}`} theme="green" />
+          <QuickStatsCard icon="list-check" title="Tasks Done" value={`${completedChores}/${totalChores}`} theme="green" />
         </XStack>
       </YStack>
 
@@ -153,11 +147,11 @@ const ChildDetailsScreen = ({ route }) => {
           </Theme>
         </XStack>
 
-        {chores.map((chore, index) => (
+        {chores?.map((chore, index) => (
           <TaskCard key={chore.id} task={chore} theme={THEMES[index % THEMES.length]} />
         ))}
 
-        {chores.length === 0 && (
+        {(!chores || chores.length === 0) && (
           <Card bg="$color4" br="$6" p="$4">
             <Text fontSize="$3" color="$color11" ta="center">
               No tasks assigned yet
@@ -195,18 +189,18 @@ const ChildDetailsScreen = ({ route }) => {
                   Add Reward
                 </Text>
                 <Text fontSize="$2" color="$color11" ta="center">
-                  Create a new reward for {child.name}
+                  Create a new reward for {child.username}
                 </Text>
               </YStack>
             </Card>
           </Theme>
 
-          {storeItems.map((item, index) => (
-            <StoreItemCard key={item.item_id} item={item} theme={THEMES[index % THEMES.length]} />
+          {storeItems?.map((item, index) => (
+            <StoreItemCard key={item.id} item={item} theme={THEMES[index % THEMES.length]} />
           ))}
         </ScrollView>
 
-        {storeItems.length === 0 && (
+        {(!storeItems || storeItems.length === 0) && (
           <Card bg="$color4" br="$6" p="$4">
             <Text fontSize="$3" color="$color11" ta="center">
               No rewards added yet
