@@ -6,6 +6,7 @@ import ParentScreenWrapper from '../../components/parent/ParentScreenWrapper';
 import { deleteToken } from '../../api/storage';
 import { useAuth } from '../../context/AuthContext';
 import { useParentProfile } from '../../hooks/useParent';
+import { AVATARS } from '../../data/avatars';
 
 const SettingCard = ({ icon, title, onPress, theme: cardTheme }) => {
   const theme = useTheme();
@@ -82,10 +83,12 @@ const ParentProfileScreen = () => {
   return (
     <ParentScreenWrapper containerProps={{ gap: '$6' }}>
       <YStack ai="center" gap="$4">
-        <Avatar circular size="$12" borderWidth={4} borderColor="$color6">
-          <Avatar.Image source={require('../../../assets/avatars/avatar1.png')} />
-          <Avatar.Fallback backgroundColor="$color6" />
-        </Avatar>
+        <Circle borderWidth={4} borderColor="$color6">
+          <Avatar circular size="$12">
+            <Avatar.Image source={AVATARS[parentProfile.avatarUrl] || AVATARS.DEFAULT} />
+            <Avatar.Fallback backgroundColor="$color6" />
+          </Avatar>
+        </Circle>
         <YStack ai="center" gap="$1">
           <Text fontSize="$7" fontWeight="600" fontFamily="$heading">
             {parentProfile.username}
