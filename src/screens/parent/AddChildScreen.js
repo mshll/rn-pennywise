@@ -135,6 +135,21 @@ const AddChildScreen = () => {
           </YStack>
 
           <Form gap="$4" onSubmit={handleSubmit}>
+            <Button
+              size="$4"
+              w="100%"
+              bg="$color4"
+              onPress={() => setShowAvatarSheet(true)}
+              disabled={isLoading}
+              animation="bouncy"
+              pressStyle={{ scale: 0.97 }}
+            >
+              <XStack gap="$2" ai="center">
+                <Image source={AVATARS[formData.avatarUrl]} width={24} height={24} borderRadius={12} />
+                <Text>Choose Avatar</Text>
+              </XStack>
+            </Button>
+
             <YStack gap="$4">
               <Input
                 size="$4"
@@ -185,21 +200,6 @@ const AddChildScreen = () => {
                 backgroundColor="$color4"
                 disabled={isLoading}
               />
-
-              <Button
-                size="$4"
-                w="100%"
-                bg="$color4"
-                onPress={() => setShowAvatarSheet(true)}
-                disabled={isLoading}
-                animation="bouncy"
-                pressStyle={{ scale: 0.97 }}
-              >
-                <XStack gap="$2" ai="center">
-                  <Image source={AVATARS[formData.avatarUrl]} width={24} height={24} borderRadius={12} />
-                  <Text>Choose Avatar</Text>
-                </XStack>
-              </Button>
             </YStack>
 
             <Theme name="green">
@@ -214,7 +214,7 @@ const AddChildScreen = () => {
               >
                 <XStack gap="$2" ai="center">
                   {isLoading && <Icon name="circle-notch" size={20} color={theme.color.val} style={{ transform: [{ rotate: '360deg' }] }} />}
-                  <Text fontSize="$5" fontFamily="$body">
+                  <Text fontSize="$3" fontFamily="$body">
                     {isLoading ? 'Adding Child...' : 'Add Child'}
                   </Text>
                 </XStack>
@@ -229,7 +229,7 @@ const AddChildScreen = () => {
             <Sheet.Handle />
             <YStack gap="$4">
               <Text fontSize="$6" fontWeight="600" ta="center">
-                Choose Your Avatar
+                Choose Avatar
               </Text>
               <XStack flexWrap="wrap" jc="center" gap="$4">
                 {Object.entries(AVATARS).map(

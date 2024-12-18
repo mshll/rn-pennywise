@@ -22,6 +22,7 @@ export const ROUTE_THEMES = {
   ParentChores: 'green',
   ParentStore: 'purple',
   ParentProfile: 'pink',
+  ParentChildren: 'orange',
 };
 
 export const INITIAL_BALANCE = 80;
