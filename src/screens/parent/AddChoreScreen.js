@@ -148,7 +148,7 @@ const AddChoreScreen = ({ route }) => {
             <Text fontSize="$4" color="$color11" ta="center">
               Create a new task for your child
             </Text>
-            <XStack jc="center" ai="center" gap="$3">
+            <XStack jc="center" ai="center" gap="$2">
               <Text fontSize="$3" color="$color11" ta="center">
                 Your Balance:
               </Text>

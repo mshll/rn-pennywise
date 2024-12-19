@@ -22,6 +22,14 @@ export const useAddChild = () => {
 
   return useMutation({
     mutationFn: async ({ childData, username }) => {
+      // Validate required fields
+      const requiredFields = ['username', 'password', 'initialBalance', 'dateOfBirth', 'avatarUrl'];
+      const missingFields = requiredFields.filter((field) => !childData[field]);
+
+      if (missingFields.length > 0) {
+        throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      }
+
       // First try to deduct the initial balance
       const success = await updateBalance.mutateAsync({
         username,

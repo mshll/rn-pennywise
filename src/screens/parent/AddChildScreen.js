@@ -150,9 +150,12 @@ const AddChildScreen = () => {
             <Text fontSize="$4" color="$color11" ta="center">
               Enter your child's information
             </Text>
-            <Text fontSize="$3" color="$color11" ta="center">
-              Your Balance: <CoinAmount amount={parentBalance} />
-            </Text>
+            <XStack jc="center" ai="center" gap="$2">
+              <Text fontSize="$3" color="$color11" ta="center">
+                Your Balance:
+              </Text>
+              <CoinAmount amount={parentBalance} />
+            </XStack>
           </YStack>
 
           <Form gap="$4" onSubmit={handleSubmit}>
